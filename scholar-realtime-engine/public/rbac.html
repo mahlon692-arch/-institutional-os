@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scholar Engine - Granular RBAC & Staff Provisioning</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 50: '#ecfdf5', 500: '#10b981', 600: '#059669', 950: '#022c22' }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen flex flex-col justify-between">
+
+    <!-- TOP HEADER -->
+    <header class="bg-slate-900 border-b border-slate-800 px-6 py-3.5 flex justify-between items-center z-30">
+        <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 font-bold text-sm">🔑</div>
+            <div>
+                <h1 class="font-bold text-white text-sm tracking-wide">Scholar Engine <span class="text-amber-400 font-mono text-xs ml-2">[STEP 3.2.3: GRANULAR RBAC & PROVISIONING]</span></h1>
+                <p class="text-xs text-slate-400">Principal Security Dashboard & Cryptographic Domain Handshake</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-4">
+            <a href="/" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold px-3 py-1.5 rounded border border-slate-700 transition-colors">← Back to Nexus</a>
+            <div class="text-xs font-semibold text-amber-400 bg-amber-950 px-3 py-1 rounded border border-amber-800">
+                Principal Access Level
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="flex-1 p-6 max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- COLUMN 1: PROVISION NEW STAFF MEMBER -->
+        <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl space-y-4">
+            <h3 class="text-sm font-bold text-white uppercase tracking-wider border-b border-slate-800 pb-3">Provision Staff Account</h3>
+            
+            <div class="space-y-3 text-xs">
+                <div>
+                    <label class="block text-slate-400 mb-1 font-semibold">Staff Full Name</label>
+                    <input type="text" id="staff-name" placeholder="e.g. Mr. Kipioo" class="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-slate-200 focus:outline-none focus:border-amber-500 font-mono">
+                </div>
+                <div>
+                    <label class="block text-slate-400 mb-1 font-semibold">Institutional Email</label>
+                    <input type="email" id="staff-email" placeholder="staff@nairobihigh.edu.ke" class="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-slate-200 focus:outline-none focus:border-amber-500 font-mono">
+                </div>
+                <div>
+                    <label class="block text-slate-400 mb-1 font-semibold">Assigned Role & Domain</label>
+                    <select id="staff-role" onchange="updateDomainPreview()" class="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-slate-200 focus:outline-none focus:border-amber-500 font-mono">
+                        <option value="teacher">Instructor / Teacher</option>
+                        <option value="finance">Finance Officer / Bursar</option>
+                        <option value="security">Gate Security Officer</option>
+                        <option value="admin">Vice Principal / Deputy</option>
+                    </select>
+                </div>
+
+                <!-- DYNAMIC DOMAIN BOUNDARY PREVIEW -->
+                <div class="p-3 bg-slate-950 border border-slate-800 rounded space-y-1.5 font-mono text-[11px]">
+                    <div class="text-amber-400 font-bold mb-1">Enforced Boundary Permissions:</div>
+                    <div id="perm-academics" class="text-emerald-400">✓ Academic Grading & Attendance Logs</div>
+                    <div id="perm-conduct" class="text-emerald-400">✓ Behavioral Discipline Ledger</div>
+                    <div id="perm-fees" class="text-slate-500 line-through">✗ Fee Ledger & Invoicing (Restricted)</div>
+                    <div id="perm-wallet" class="text-slate-500 line-through">✗ Student Smart Wallet (Strictly Private)</div>
+                </div>
+
+                <button onclick="mintStaffToken()" class="w-full bg-amber-600 hover:bg-amber-500 text-slate-950 font-bold py-2 rounded transition-colors mt-2">
+                    Generate Secure Handshake Token 🔐
+                </button>
+            </div>
+        </div>
+
+        <!-- COLUMNS 2 & 3: ACTIVE STAFF ROSTER & AUDIT LOG -->
+        <div class="lg:col-span-2 space-y-6">
+            
+            <!-- ACTIVE STAFF ROSTER TABLE -->
+            <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl space-y-4">
+                <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                    <h3 class="text-sm font-bold text-slate-200">Authorized Institutional Staff Roster</h3>
+                    <span class="text-xs font-mono text-emerald-400 bg-emerald-950 px-2.5 py-1 rounded border border-emerald-800">4 Active Nodes</span>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs font-mono">
+                        <thead class="bg-slate-950 text-slate-400 uppercase text-[10px]">
+                            <tr>
+                                <th class="p-3">Staff Member</th>
+                                <th class="p-3">Role / Domain</th>
+                                <th class="p-3">Token Handshake Status</th>
+                                <th class="p-3">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800 text-slate-300">
+                            <tr>
+                                <td class="p-3 text-white font-bold">Mr. Kipioo</td>
+                                <td class="p-3 text-emerald-400">Instructor (Teacher)</td>
+                                <td class="p-3"><span class="text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded text-[10px] border border-emerald-800">Verified (SHA-256)</span></td>
+                                <td class="p-3"><button onclick="alert('Revoking or rotating security handshake token.')" class="text-red-400 hover:underline">Revoke</button></td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 text-white font-bold">Mrs. Dube</td>
+                                <td class="p-3 text-amber-400">Finance Officer</td>
+                                <td class="p-3"><span class="text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded text-[10px] border border-emerald-800">Verified (SHA-256)</span></td>
+                                <td class="p-3"><button onclick="alert('Revoking or rotating security handshake token.')" class="text-red-400 hover:underline">Revoke</button></td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 text-white font-bold">Officer Juma</td>
+                                <td class="p-3 text-cyan-400">Gate Security</td>
+                                <td class="p-3"><span class="text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded text-[10px] border border-emerald-800">Verified (SHA-256)</span></td>
+                                <td class="p-3"><button onclick="alert('Revoking or rotating security handshake token.')" class="text-red-400 hover:underline">Revoke</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- RECENT SECURITY HANDSHAKE AUDIT STREAM -->
+            <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl space-y-3">
+                <h3 class="text-xs font-semibold uppercase text-slate-400">Cryptographic Handshake Audit Stream</h3>
+                <div class="space-y-2 font-mono text-[11px]">
+                    <div class="p-2.5 bg-slate-950 border border-slate-800 rounded text-slate-300 flex justify-between">
+                        <span>[AUDIT] Token Handshake success: Mrs. Dube (Finance Domain)</span>
+                        <span class="text-slate-500">2 mins ago</span>
+                    </div>
+                    <div class="p-2.5 bg-slate-950 border border-slate-800 rounded text-slate-300 flex justify-between">
+                        <span>[AUDIT] Domain boundary check enforced: Teacher token blocked from Wallet API</span>
+                        <span class="text-slate-500">14 mins ago</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- CONTROLLER SCRIPT -->
+    <script>
+        function updateDomainPreview() {
+            let role = document.getElementById('staff-role').value;
+            let fees = document.getElementById('perm-fees');
+            let wallet = document.getElementById('perm-wallet');
+
+            if (role === 'finance') {
+                fees.className = "text-emerald-400";
+                fees.innerText = "✓ Fee Ledger & Invoicing Access";
+                wallet.className = "text-slate-500 line-through";
+                wallet.innerText = "✗ Student Smart Wallet (Strictly Private)";
+            } else if (role === 'admin') {
+                fees.className = "text-emerald-400";
+                fees.innerText = "✓ Full Financial & Administrative Oversight";
+                wallet.className = "text-slate-500 line-through";
+                wallet.innerText = "✗ Student Smart Wallet (Strictly Private)";
+            } else {
+                fees.className = "text-slate-500 line-through";
+                fees.innerText = "✗ Fee Ledger & Invoicing (Restricted)";
+                wallet.className = "text-slate-500 line-through";
+                wallet.innerText = "✗ Student Smart Wallet (Strictly Private)";
+            }
+        }
+
+        function mintStaffToken() {
+            let name = document.getElementById('staff-name').value || "New Staff Member";
+            let role = document.getElementById('staff-role').value;
+            let token = "SE-TOKEN-" + Math.random().toString(36).substring(2, 10).toUpperCase();
+            alert(`SUCCESS: Cryptographic handshake token minted for [${name}] under role [${role.toUpperCase()}].\n\nSecure Access Key:\n${token}\n\nThis token has been bound to institutional boundaries.`);
+        }
+    </script>
+</body>
+</html>

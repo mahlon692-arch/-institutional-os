@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-950 text-slate-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parent Portal // Academix OS</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js Engine -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .portal-view { display: none; }
+        .portal-view.active { display: block; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #020617; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #334155; }
+    </style>
+</head>
+<body class="h-full flex overflow-hidden font-sans antialiased text-slate-300">
+
+    <!-- PARENT SIDE NAVIGATION -->
+    <aside class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col justify-between shrink-0 select-none z-20">
+        <div class="p-4">
+            <!-- Institutional Header -->
+            <div class="flex items-center space-x-3 px-2 py-3 mb-6 border-b border-slate-800/80">
+                <div class="w-9 h-9 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+                    <i class="fa-solid fa-house-user text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="text-xs font-black tracking-widest text-slate-100 uppercase">Parent Portal</h1>
+                    <p class="text-[10px] font-mono text-emerald-500">ACADEMIX // GUARDIAN</p>
+                </div>
+            </div>
+
+            <!-- Portal Navigation Links -->
+            <nav class="space-y-1" id="parent-nav">
+                <button onclick="switchPortalView('overview')" id="nav-overview" class="parent-nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                    <i class="fa-solid fa-gauge w-5 text-center"></i>
+                    <span>Child Overview</span>
+                </button>
+                <button onclick="switchPortalView('academics')" id="nav-academics" class="parent-nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-400 hover:bg-slate-800 hover:text-slate-200 border border-transparent">
+                    <i class="fa-solid fa-book-open-reader w-5 text-center"></i>
+                    <span>Grades & Report Cards</span>
+                </button>
+                <button onclick="switchPortalView('finances')" id="nav-finances" class="parent-nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-400 hover:bg-slate-800 hover:text-slate-200 border border-transparent">
+                    <i class="fa-solid fa-wallet w-5 text-center"></i>
+                    <span>Fee Balances & M-Pesa</span>
+                </button>
+                <button onclick="switchPortalView('attendance')" id="nav-attendance" class="parent-nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-400 hover:bg-slate-800 hover:text-slate-200 border border-transparent">
+                    <i class="fa-solid fa-fingerprint w-5 text-center"></i>
+                    <span>Gate Entry Logs</span>
+                </button>
+                <button onclick="switchPortalView('messaging')" id="nav-messaging" class="parent-nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-400 hover:bg-slate-800 hover:text-slate-200 border border-transparent">
+                    <i class="fa-solid fa-comments w-5 text-center"></i>
+                    <span>Teacher Communications</span>
+                </button>
+            </nav>
+        </div>
+
+        <!-- Guardian Footer Profile -->
+        <div class="p-4 border-t border-slate-800 bg-slate-900/50">
+            <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-xs">
+                    BO
+                </div>
+                <div class="overflow-hidden">
+                    <p class="text-xs font-bold text-slate-200 truncate">Beatrice Ochieng</p>
+                    <p class="text-[10px] text-slate-500 font-mono truncate">Guardian ID: #GUARD-902</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN PARENT DASHBOARD CONTENT AREA -->
+    <main class="flex-1 flex flex-col h-full overflow-hidden relative">
+
+        <!-- HEADER BAR -->
+        <header class="h-16 border-b border-slate-800 px-6 flex items-center justify-between bg-slate-900/40 shrink-0">
+            <div class="flex items-center space-x-4">
+                <h2 id="portal-title" class="text-base font-bold text-slate-100 flex items-center space-x-2">
+                    <i class="fa-solid fa-child-reaching text-emerald-400"></i>
+                    <span>Student Guardian Dashboard: Brian Ochieng (#01-102)</span>
+                </h2>
+            </div>
+            <div class="flex items-center space-x-3">
+                <select onchange="switchActiveChild(this.value)" class="bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-emerald-500 font-mono">
+                    <option value="brian">Ochieng, Brian (Form 1 South)</option>
+                    <option value="mercy">Ochieng, Mercy (Form 3 West)</option>
+                </select>
+                <button onclick="exportPortalReport()" class="px-3 py-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-semibold flex items-center space-x-2 transition-all">
+                    <i class="fa-solid fa-file-arrow-down"></i>
+                    <span>Download Report Package</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- PORTAL WORKSPACE -->
+        <div class="flex-1 overflow-y-auto p-6 space-y-6">
+
+            <!-- VIEW 1: CHILD OVERVIEW -->
+            <section id="view-overview" class="portal-view active space-y-6">
+                <!-- KPI Cards -->
+                <div class="grid grid-cols-4 gap-4">
+                    <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-xl">
+                        <p class="text-xs font-mono text-slate-400">CURRENT MEAN GRADE</p>
+                        <h3 class="text-2xl font-black text-emerald-400 mt-1">A- <span class="text-xs font-normal text-slate-400">(81.4%)</span></h3>
+                        <p class="text-[10px] text-emerald-400 mt-1 font-mono"><i class="fa-solid fa-arrow-trend-up"></i> Rank #3 in Form 1 South</p>
+                    </div>
+                    <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-xl">
+                        <p class="text-xs font-mono text-slate-400">TERM FEE STATUS</p>
+                        <h3 id="kpi-fee-status" class="text-2xl font-black text-amber-400 mt-1">OUTSTANDING</h3>
+                        <p id="kpi-fee-balance" class="text-[10px] text-slate-400 mt-1 font-mono">Balance: KES 8,500.00</p>
+                    </div>
+                    <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-xl">
+                        <p class="text-xs font-mono text-slate-400">ATTENDANCE RATE</p>
+                        <h3 class="text-2xl font-black text-slate-100 mt-1">98.2%</h3>
+                        <p class="text-[10px] text-emerald-400 mt-1 font-mono"><i class="fa-solid fa-circle-check"></i> Zero unauthorized absences</p>
+                    </div>
+                    <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-xl">
+                        <p class="text-xs font-mono text-slate-400">KEMIS VERIFICATION</p>
+                        <h3 class="text-2xl font-black text-indigo-400 mt-1">VERIFIED</h3>
+                        <p class="text-[10px] text-slate-400 mt-1 font-mono">UPI Match Confirmed</p>
+                    </div>
+                </div>
+
+                <!-- Quick Summary Grid -->
+                <div class="grid grid-cols-2 gap-6">
+                    <!-- Recent Activity Feed -->
+                    <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-5 space-y-4">
+                        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                            <h3 class="text-sm font-bold text-slate-200 flex items-center space-x-2">
+                                <i class="fa-solid fa-clock-rotate-left text-emerald-400"></i>
+                                <span>Recent Gate & Academic Activity</span>
+                            </h3>
+                        </div>
+                        <div class="space-y-3 font-mono text-xs">
+                            <div class="flex items-center justify-between p-2.5 bg-slate-950 rounded border border-slate-800">
+                                <div class="flex items-center space-x-3">
+                                    <i class="fa-solid fa-door-open text-emerald-400"></i>
+                                    <div>
+                                        <p class="text-slate-200 font-bold">Gate RFID Scan IN</p>
+                                        <p class="text-[10px] text-slate-500">Today, 07:42 AM</p>
+                                    </div>
+                                </div>
+                                <span class="text-emerald-400 font-bold">VERIFIED</span>
+                            </div>
+                            <div class="flex items-center justify-between p-2.5 bg-slate-950 rounded border border-slate-800">
+                                <div class="flex items-center space-x-3">
+                                    <i class="fa-solid fa-file-lines text-emerald-400"></i>
+                                    <div>
+                                        <p class="text-slate-200 font-bold">Mathematics CAT 2 Score Published</p>
+                                        <p class="text-[10px] text-slate-500">Yesterday, 02:15 PM</p>
+                                    </div>
+                                </div>
+                                <span class="text-slate-100 font-bold">88% (A)</span>
+                            </div>
+                            <div class="flex items-center justify-between p-2.5 bg-slate-950 rounded border border-slate-800">
+                                <div class="flex items-center space-x-3">
+                                    <i class="fa-solid fa-wallet text-emerald-400"></i>
+                                    <div>
+                                        <p class="text-slate-200 font-bold">M-Pesa Fee Payment Processed</p>
+                                        <p class="text-[10px] text-slate-500">3 days ago</p>
+                                    </div>
+                                </div>
+                                <span class="text-emerald-400 font-bold">KES 14,500</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Performance Chart -->
+                    <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-5 space-y-4">
+                        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                            <h3 class="text-sm font-bold text-slate-200 flex items-center space-x-2">
+                                <i class="fa-solid fa-chart-line text-emerald-400"></i>
+                                <span>Term Grade Progression</span>
+                            </h3>
+                        </div>
+                        <div class="h-56 relative">
+                            <canvas id="childProgressChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW 2: GRADES & REPORT CARDS -->
+            <section id="view-academics" class="portal-view space-y-6">
+                <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-5 space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                        <div>
+                            <h3 class="text-sm font-bold text-slate-200 flex items-center space-x-2">
+                                <i class="fa-solid fa-book-open-reader text-emerald-400"></i>
+                                <span>Official Subject Grades & Teacher Remarks</span>
+                            </h3>
+                            <p class="text-xs text-slate-400">Term 2 - Academic Year 2026</p>
+                        </div>
+                        <button onclick="exportPortalData('Report_Card_Brian')" class="px-3 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded text-xs font-mono">
+                            <i class="fa-solid fa-file-pdf"></i> Download PDF Report
+                        </button>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-xs text-left font-mono">
+                            <thead class="bg-slate-950 text-slate-400 uppercase">
+                                <tr>
+                                    <th class="p-3 border-b border-slate-800">Subject</th>
+                                    <th class="p-3 border-b border-slate-800">Teacher</th>
+                                    <th class="p-3 border-b border-slate-800">CAT Score</th>
+                                    <th class="p-3 border-b border-slate-800">Exam Score</th>
+                                    <th class="p-3 border-b border-slate-800">Final Grade</th>
+                                    <th class="p-3 border-b border-slate-800">Teacher Remarks</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-800/60">
+                                <tr>
+                                    <td class="p-3 font-bold text-slate-200">Mathematics</td>
+                                    <td class="p-3 text-slate-400">Dr. J. Mwangi</td>
+                                    <td class="p-3 text-slate-300">28/30</td>
+                                    <td class="p-3 text-slate-300">60/70</td>
+                                    <td class="p-3 font-bold text-emerald-400">A (88%)</td>
+                                    <td class="p-3 text-slate-400">Exceptional analytical aptitude.</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 font-bold text-slate-200">English Language</td>
+                                    <td class="p-3 text-slate-400">Mrs. A. Otieno</td>
+                                    <td class="p-3 text-slate-300">24/30</td>
+                                    <td class="p-3 text-slate-300">52/70</td>
+                                    <td class="p-3 font-bold text-emerald-400">B+ (76%)</td>
+                                    <td class="p-3 text-slate-400">Strong essay structuring.</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 font-bold text-slate-200">Physics</td>
+                                    <td class="p-3 text-slate-400">Mr. K. Chebet</td>
+                                    <td class="p-3 text-slate-300">26/30</td>
+                                    <td class="p-3 text-slate-300">55/70</td>
+                                    <td class="p-3 font-bold text-emerald-400">A- (81%)</td>
+                                    <td class="p-3 text-slate-400">Consistent laboratory engagement.</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 font-bold text-slate-200">Chemistry</td>
+                                    <td class="p-3 text-slate-400">Mr. S. Ouma</td>
+                                    <td class="p-3 text-slate-300">22/30</td>
+                                    <td class="p-3 text-slate-300">48/70</td>
+                                    <td class="p-3 font-bold text-emerald-300">B (70%)</td>
+                                    <td class="p-3 text-slate-400">Good progress in stoichiometry.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW 3: FEE BALANCES & M-PESA -->
+            <section id="view-finances" class="portal-view space-y-6">
+                <div class="grid grid-cols-3 gap-6">
+                    <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-5 space-y-4">
+                        <div class="border-b border-slate-800 pb-3">
+                            <h3 class="text-sm font-bold text-slate-200 flex items-center space-x-2">
+                                <i class="fa-solid fa-wallet text-emerald-400"></i>
+                                <span>Fee Account Summary</span>
+                            </h3>
+                        </div>
+                        <div class="space-y-3 font-mono text-xs">
+                            <div class="flex justify-between py-1 border-b border-slate-800/60">
+                                <span class="text-slate-400">Total Term Billed:</span>
+                                <span class="text-slate-200 font-bold">KES 35,000</span>
+                            </div>
+                            <div class="flex justify-between py-1 border-b border-slate-800/60">
+                                <span class="text-slate-400">Total Paid:</span>
+                                <span id="summary-total-paid" class="text-emerald-400 font-bold">KES 26,500</span>
+                            </div>
+                            <div class="flex justify-between py-1">
+                                <span class="text-slate-400">Current Balance:</span>
+                                <span id="summary-current-balance" class="text-amber-400 font-bold">KES 8,500.00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- M-Pesa Express Simulation Widget -->
+                    <div class="col-span-2 bg-slate-900/80 border border-slate-800 rounded-xl p-5 space-y-4">
+                        <div class="border-b border-slate-800 pb-3">
+                            <h3 class="text-sm font-bold text-slate-200 flex items-center space-x-2">
+                                <i class="fa-solid fa-mobile-screen-button text-emerald-400"></i>
+                                <span>Instant M-Pesa Express STK Push Top-Up</span>
+                            </h3>
+                            <p class="text-xs text-slate-400">Trigger automated payment prompt directly to guardian phone</p>
+                        </div>
+                        <form onsubmit="event.preventDefault(); simulateMpesaSTK();" class="space-y-4">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-mono text-slate-400 mb-1">M-PESA PHONE NUMBER</label>
+                                    <input type="text" required value="+254 712 345 678" class="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-xs text-slate-200 font-mono focus:outline-none focus:border-emerald-500">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-mono text-slate-400 mb-1">AMOUNT (KES)</label>
+                                    <input id="mpesa-amount-input" type="number" required value="8500" placeholder="8500" class="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-xs text-slate-200 font-mono focus:outline-none focus:border-emerald-500">
+                                </div>
+                            </div>
+                            <button id="stk-btn" type="submit" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold rounded-lg text-xs flex items-center justify-center space-x-2 transition-all">
+                                <i class="fa-solid fa-bolt"></i>
+                                <span>Initiate M-Pesa STK Push</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW 4: GATE ENTRY LOGS -->
+            <section id="view-attendance" class="portal-view space-y-6">
+                <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-5 space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                        <h3 class="text-sm font-bold text-slate-200 flex items-center space-x-2">
+                            <i class="fa-solid fa-fingerprint text-emerald-400"></i>
+                            <span>Child Gate Access & RFID Biometric Audit Logs</span>
+                        </h3>
+                        <span class="text-xs font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">REAL-TIME SYNCED</span>
+                    </div>
+
+                    <div class="space-y-2 font-mono text-xs">
+                        <div class="flex items-center justify-between p-3 bg-slate-950 rounded border border-slate-800">
+                            <div>
+                                <p class="text-slate-200 font-bold">RFID Gate Scan IN // Main Gate Terminal A</p>
+                                <p class="text-[10px] text-slate-500">Timestamp: July 30, 2026 - 07:42:12 AM</p>
+                            </div>
+                            <span class="text-emerald-400 font-bold flex items-center space-x-1"><i class="fa-solid fa-circle-check"></i><span>VERIFIED</span></span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-slate-950 rounded border border-slate-800">
+                            <div>
+                                <p class="text-slate-200 font-bold">RFID Gate Scan OUT // Main Gate Terminal A</p>
+                                <p class="text-[10px] text-slate-500">Timestamp: July 29, 2026 - 05:10:04 PM</p>
+                            </div>
+                            <span class="text-emerald-400 font-bold flex items-center space-x-1"><i class="fa-solid fa-circle-check"></i><span>VERIFIED</span></span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-slate-950 rounded border border-slate-800">
+                            <div>
+                                <p class="text-slate-200 font-bold">RFID Gate Scan IN // Main Gate Terminal A</p>
+                                <p class="text-[10px] text-slate-500">Timestamp: July 29, 2026 - 07:38.50 AM</p>
+                            </div>
+                            <span class="text-emerald-400 font-bold flex items-center space-x-1"><i class="fa-solid fa-circle-check"></i><span>VERIFIED</span></span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW 5: TEACHER COMMUNICATIONS -->
+            <section id="view-messaging" class="portal-view space-y-6">
+                <div class="grid grid-cols-3 gap-6 h-[500px]">
+                    <!-- Teacher Contacts List -->
+                    <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-4 flex flex-col space-y-3">
+                        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider font-mono">Class Instructors</h3>
+                        <div class="space-y-2 overflow-y-auto flex-1">
+                            <div onclick="selectTeacher('Dr. J. Mwangi', 'Mathematics')" class="p-3 bg-slate-950 hover:bg-slate-800/80 cursor-pointer rounded-lg border border-slate-800 transition-all">
+                                <p class="text-xs font-bold text-slate-200">Dr. J. Mwangi</p>
+                                <p class="text-[10px] text-emerald-400 font-mono">Mathematics Lead</p>
+                            </div>
+                            <div onclick="selectTeacher('Mrs. A. Otieno', 'English Language')" class="p-3 bg-slate-950 hover:bg-slate-800/80 cursor-pointer rounded-lg border border-slate-800 transition-all">
+                                <p class="text-xs font-bold text-slate-200">Mrs. A. Otieno</p>
+                                <p class="text-[10px] text-emerald-400 font-mono">English Language</p>
+                            </div>
+                            <div onclick="selectTeacher('Mr. K. Chebet', 'Physics')" class="p-3 bg-slate-950 hover:bg-slate-800/80 cursor-pointer rounded-lg border border-slate-800 transition-all">
+                                <p class="text-xs font-bold text-slate-200">Mr. K. Chebet</p>
+                                <p class="text-[10px] text-emerald-400 font-mono">Physics Department</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chat Window -->
+                    <div class="col-span-2 bg-slate-900/80 border border-slate-800 rounded-xl flex flex-col justify-between overflow-hidden">
+                        <div class="p-4 border-b border-slate-800 bg-slate-950/50 flex items-center justify-between">
+                            <div>
+                                <h4 id="chat-recipient" class="text-xs font-bold text-slate-200">Dr. J. Mwangi (Mathematics)</h4>
+                                <p class="text-[10px] text-emerald-400 font-mono">Online // Secure Encrypted Channel</p>
+                            </div>
+                        </div>
+                        <div id="chat-messages" class="p-4 overflow-y-auto flex-1 space-y-3 font-mono text-xs">
+                            <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 max-w-[80%]">
+                                <p class="text-[10px] text-slate-500 mb-1">Dr. J. Mwangi • Yesterday 03:20 PM</p>
+                                <p class="text-slate-300">Hello Mrs. Ochieng, Brian performed exceptionally well in the recent CAT 2 examination. Keep up the encouragement!</p>
+                            </div>
+                            <div class="bg-emerald-950/40 border border-emerald-500/30 p-3 rounded-lg border border-slate-800 max-w-[80%] ml-auto">
+                                <p class="text-[10px] text-emerald-400/70 mb-1">You • Yesterday 04:05 PM</p>
+                                <p class="text-emerald-200">Thank you Dr. Mwangi. We appreciate your continued support and guidance for his math studies.</p>
+                            </div>
+                        </div>
+                        <div class="p-3 border-t border-slate-800 bg-slate-950/50 flex items-center space-x-2">
+                            <input id="chat-input" type="text" placeholder="Type message to educator..." class="flex-1 bg-slate-900 border border-slate-800 rounded px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-emerald-500 font-mono">
+                            <button onclick="sendParentMessage()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold rounded text-xs transition-all">
+                                <i class="fa-solid fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- PARENT PORTAL SCRIPTS -->
+    <script>
+        // Track current fee state dynamically (Total billed: 35,000, Initially paid: 26,500, Balance: 8,500)
+        let feeState = {
+            totalBilled: 35000,
+            totalPaid: 26500,
+            currentBalance: 8500
+        };
+
+        // Portal Tab Switcher
+        function switchPortalView(viewId) {
+            document.querySelectorAll('.portal-view').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.parent-nav-btn').forEach(btn => {
+                btn.className = "parent-nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-400 hover:bg-slate-800 hover:text-slate-200 border border-transparent";
+            });
+
+            const targetView = document.getElementById('view-' + viewId);
+            const targetNav = document.getElementById('nav-' + viewId);
+
+            if(targetView) targetView.classList.add('active');
+            if(targetNav) targetNav.className = "parent-nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all bg-emerald-500/10 text-emerald-400 border border-emerald-500/30";
+
+            if (viewId === 'overview' && window.childProgressChartRef) {
+                window.childProgressChartRef.resize();
+            }
+        }
+
+        // Child Switcher Handler
+        function switchActiveChild(childKey) {
+            const titleEl = document.getElementById('portal-title');
+            if(childKey === 'mercy') {
+                titleEl.innerHTML = `<i class="fa-solid fa-child-reaching text-emerald-400"></i><span>Student Guardian Dashboard: Mercy Ochieng (#03-305)</span>`;
+            } else {
+                titleEl.innerHTML = `<i class="fa-solid fa-child-reaching text-emerald-400"></i><span>Student Guardian Dashboard: Brian Ochieng (#01-102)</span>`;
+            }
+        }
+
+        // M-Pesa STK Push Simulation with correct balance deduction logic
+        function simulateMpesaSTK() {
+            const btn = document.getElementById('stk-btn');
+            const amountInput = document.getElementById('mpesa-amount-input');
+            const paymentAmount = parseFloat(amountInput.value) || 0;
+
+            if (paymentAmount <= 0) {
+                alert('Please enter a valid payment amount.');
+                return;
+            }
+
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i><span>Sending M-Pesa STK Push to Phone...</span>';
+            btn.classList.replace('bg-emerald-600', 'bg-amber-600');
+
+            setTimeout(() => {
+                btn.innerHTML = '<i class="fa-solid fa-check"></i><span>STK Push Sent! Enter PIN on Phone</span>';
+                setTimeout(() => {
+                    // Update fee balance logic correctly
+                    feeState.totalPaid += paymentAmount;
+                    feeState.currentBalance = Math.max(0, feeState.totalBilled - feeState.totalPaid);
+
+                    // Update UI elements dynamically
+                    document.getElementById('summary-total-paid').innerText = `KES ${feeState.totalPaid.toLocaleString()}`;
+                    
+                    const balanceEl = document.getElementById('summary-current-balance');
+                    const kpiStatusEl = document.getElementById('kpi-fee-status');
+                    const kpiBalanceEl = document.getElementById('kpi-fee-balance');
+
+                    balanceEl.innerText = `KES ${feeState.currentBalance.toLocaleString()}.00`;
+
+                    if (feeState.currentBalance === 0) {
+                        balanceEl.className = "text-emerald-400 font-bold";
+                        balanceEl.innerText += " (Cleared)";
+                        kpiStatusEl.innerText = "CLEARED";
+                        kpiStatusEl.className = "text-2xl font-black text-emerald-400 mt-1";
+                        kpiBalanceEl.innerText = "Balance: KES 0.00";
+                    } else {
+                        balanceEl.className = "text-amber-400 font-bold";
+                        kpiStatusEl.innerText = "OUTSTANDING";
+                        kpiStatusEl.className = "text-2xl font-black text-amber-400 mt-1";
+                        kpiBalanceEl.innerText = `Balance: KES ${feeState.currentBalance.toLocaleString()}.00`;
+                    }
+
+                    amountInput.value = feeState.currentBalance;
+
+                    btn.innerHTML = '<i class="fa-solid fa-bolt"></i><span>Initiate M-Pesa STK Push</span>';
+                    btn.classList.replace('bg-amber-600', 'bg-emerald-600');
+                    alert(`M-Pesa payment of KES ${paymentAmount.toLocaleString()} confirmed successfully! Remaining fee balance updated to KES ${feeState.currentBalance.toLocaleString()}.00.`);
+                }, 3000);
+            }, 1500);
+        }
+
+        // Teacher Chat Select
+        function selectTeacher(name, subject) {
+            document.getElementById('chat-recipient').innerText = `${name} (${subject})`;
+        }
+
+        function sendParentMessage() {
+            const input = document.getElementById('chat-input');
+            if(!input.value.trim()) return;
+
+            const chatMessages = document.getElementById('chat-messages');
+            const msg = document.createElement('div');
+            msg.className = "bg-emerald-950/40 border border-emerald-500/30 p-3 rounded-lg max-w-[80%] ml-auto";
+            msg.innerHTML = `<p class="text-[10px] text-emerald-400/70 mb-1">You • Just now</p><p class="text-emerald-200">${input.value}</p>`;
+            chatMessages.appendChild(msg);
+            input.value = '';
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Exporter
+        function exportPortalData(dataset) {
+            alert(`Generating official PDF document package for ${dataset}... Download complete.`);
+        }
+
+        function exportPortalReport() {
+            alert('Guardian comprehensive telemetry report package downloaded successfully.');
+        }
+
+        // Initialize Child Progress Chart
+        document.addEventListener('DOMContentLoaded', () => {
+            const ctx = document.getElementById('childProgressChart');
+            if(ctx) {
+                window.childProgressChartRef = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Term 1 2024', 'Term 2 2024', 'Term 3 2024', 'Term 1 2025', 'Term 2 2025', 'Term 3 2025', 'Term 2 2026'],
+                        datasets: [{
+                            label: 'Brian Mean Score (%)',
+                            data: [72.0, 74.5, 76.2, 78.0, 79.5, 80.2, 81.4],
+                            borderColor: '#10b981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            fill: true,
+                            tension: 0.3
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { labels: { color: '#94a3b8' } } },
+                        scales: {
+                            x: { grid: { color: '#1e293b' }, ticks: { color: '#94a3b8' } },
+                            y: { grid: { color: '#1e293b' }, ticks: { color: '#94a3b8' } }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

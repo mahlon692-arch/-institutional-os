@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scholar Engine - Institutional Analytics & Telemetry</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 50: '#ecfdf5', 500: '#10b981', 600: '#059669', 950: '#022c22' }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen flex flex-col justify-between">
+
+    <!-- TOP HEADER -->
+    <header class="bg-slate-900 border-b border-slate-800 px-6 py-3.5 flex justify-between items-center z-30">
+        <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400 font-bold text-sm">📊</div>
+            <div>
+                <h1 class="font-bold text-white text-sm tracking-wide">Scholar Engine <span class="text-cyan-400 font-mono text-xs ml-2">[STEP 3.2.4: VISUAL TELEMETRY]</span></h1>
+                <p class="text-xs text-slate-400">Institutional Financial Recovery & Academic GPA Progression Charts</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-4">
+            <a href="/" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold px-3 py-1.5 rounded border border-slate-700 transition-colors">← Back to Nexus</a>
+            <div class="text-xs font-semibold text-cyan-400 bg-cyan-950 px-3 py-1 rounded border border-cyan-800">
+                Nairobi High School Telemetry
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="flex-1 p-6 max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        <!-- CHART 1: FINANCIAL RECOVERY -->
+        <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl space-y-4 flex flex-col justify-between">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                <div>
+                    <h3 class="text-sm font-bold text-white">Financial Recovery & Fee Collections</h3>
+                    <p class="text-[11px] text-slate-400">Collections vs Outstanding Arrears (Millions KES)</p>
+                </div>
+                <span class="text-xs font-mono text-emerald-400 bg-emerald-950 px-2.5 py-1 rounded border border-emerald-800">92% Recovery Rate</span>
+            </div>
+            <div class="relative h-72 w-full flex items-center justify-center">
+                <canvas id="financialChart"></canvas>
+            </div>
+            <div class="text-[11px] text-slate-500 font-mono text-center pt-2 border-t border-slate-800">
+                Data synchronized with National KEMIS Telemetry engine.
+            </div>
+        </div>
+
+        <!-- CHART 2: GPA PROGRESSION TREND -->
+        <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl space-y-4 flex flex-col justify-between">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                <div>
+                    <h3 class="text-sm font-bold text-white">Term-over-Term GPA Progression</h3>
+                    <p class="text-[11px] text-slate-400">Institutional Academic Mean Trajectory</p>
+                </div>
+                <span class="text-xs font-mono text-cyan-400 bg-cyan-950 px-2.5 py-1 rounded border border-cyan-800">Mean GPA: 3.92</span>
+            </div>
+            <div class="relative h-72 w-full flex items-center justify-center">
+                <canvas id="gpaChart"></canvas>
+            </div>
+            <div class="text-[11px] text-slate-500 font-mono text-center pt-2 border-t border-slate-800">
+                Aggregated across all grade streams and cohorts.
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="text-center py-4 text-[10px] text-slate-600 font-mono border-t border-slate-900">
+        Scholar Engine Telemetry Core • Chart.js Responsive Graphics Engine
+    </footer>
+
+    <!-- CHART INITIALIZATION SCRIPT -->
+    <script>
+        // Financial Recovery Bar Chart
+        const ctxFinancial = document.getElementById('financialChart').getContext('2d');
+        new Chart(ctxFinancial, {
+            type: 'bar',
+            data: {
+                labels: ['Term 1 (2025)', 'Term 2 (2025)', 'Term 3 (2025)', 'Term 1 (2026)'],
+                datasets: [
+                    {
+                        label: 'Collected Fees (KES M)',
+                        data: [18.5, 21.0, 24.2, 26.8],
+                        backgroundColor: '#10b981',
+                        borderRadius: 4
+                    },
+                    {
+                        label: 'Outstanding Arrears (KES M)',
+                        data: [4.2, 3.1, 2.0, 1.5],
+                        backgroundColor: '#f59e0b',
+                        borderRadius: 4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { labels: { color: '#94a3b8', font: { family: 'monospace', size: 11 } } }
+                },
+                scales: {
+                    x: { ticks: { color: '#64748b', font: { family: 'monospace' } }, grid: { color: '#1e293b' } },
+                    y: { ticks: { color: '#64748b', font: { family: 'monospace' } }, grid: { color: '#1e293b' } }
+                }
+            }
+        });
+
+        // GPA Progression Line Chart
+        const ctxGpa = document.getElementById('gpaChart').getContext('2d');
+        new Chart(ctxGpa, {
+            type: 'line',
+            data: {
+                labels: ['Term 1 (2025)', 'Term 2 (2025)', 'Term 3 (2025)', 'Term 1 (2026)'],
+                datasets: [{
+                    label: 'Institutional Mean GPA',
+                    data: [3.45, 3.62, 3.80, 3.92],
+                    borderColor: '#06b6d4',
+                    backgroundColor: 'rgba(6, 182, 212, 0.1)',
+                    fill: true,
+                    tension: 0.3,
+                    borderWidth: 2,
+                    pointBackgroundColor: '#06b6d4'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { labels: { color: '#94a3b8', font: { family: 'monospace', size: 11 } } }
+                },
+                scales: {
+                    x: { ticks: { color: '#64748b', font: { family: 'monospace' } }, grid: { color: '#1e293b' } },
+                    y: { min: 3.0, max: 4.5, ticks: { color: '#64748b', font: { family: 'monospace' } }, grid: { color: '#1e293b' } }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

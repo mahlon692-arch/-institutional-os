@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scholar Engine - Gate Security Terminal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 50: '#ecfdf5', 500: '#10b981', 600: '#059669', 950: '#022c22' }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- TOP HEADER BAR -->
+    <header class="bg-slate-900 border-b border-slate-800 px-6 py-3.5 flex justify-between items-center z-30">
+        <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400 font-bold text-sm">🛡️</div>
+            <div>
+                <h1 class="font-bold text-white text-sm tracking-wide">Scholar Engine <span class="text-cyan-400 font-mono text-xs ml-2">[GATE SECURITY TERMINAL]</span></h1>
+                <p class="text-xs text-slate-400">Live RFID, QR Badge Scan & Visual Verification Unit</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-4">
+            <a href="/" class="text-xs bg-slate-800 hover:bg-slate-700 text-cyan-400 font-semibold px-3 py-1.5 rounded border border-slate-700 transition-colors">← Back to Orchestrator Nexus</a>
+            <div class="flex items-center gap-2 text-xs font-mono text-emerald-400 bg-emerald-950/40 border border-emerald-800/60 px-2.5 py-1 rounded">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                Scanner Online (Port 80)
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN APP CONTAINER -->
+    <main class="flex-1 p-6 max-w-5xl mx-auto w-full grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+        
+        <!-- LEFT: INPUT & SCANNER PANEL -->
+        <div class="bg-slate-900 border border-slate-800 p-6 rounded-xl space-y-6">
+            <div>
+                <h2 class="text-base font-bold text-cyan-400 mb-1">Student Gate Verification</h2>
+                <p class="text-xs text-slate-400">Scan student QR code badge or manually enter their admission number to confirm identity and clearance.</p>
+            </div>
+
+            <!-- Manual Input Form -->
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold uppercase text-slate-400 mb-1.5">Admission Number / Student ID</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="scanInput" placeholder="e.g., SHS-881..." class="flex-1 bg-slate-950 border border-slate-800 rounded-lg px-3.5 py-2.5 text-sm text-slate-100 focus:outline-none focus:border-cyan-500 font-mono">
+                        <button onclick="processScan()" class="bg-cyan-600 hover:bg-cyan-500 text-slate-950 font-bold px-5 py-2.5 rounded-lg text-xs transition-colors">Verify ID</button>
+                    </div>
+                </div>
+
+                <!-- Simulated Quick Scan Buttons for Testing -->
+                <div class="pt-2">
+                    <span class="block text-[11px] font-semibold uppercase text-slate-500 mb-2">Simulate Hardware QR/RFID Swipe:</span>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button onclick="simulateScan('SHS-881')" class="p-2 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded text-xs text-left transition-colors">
+                            <span class="block font-bold text-emerald-400">Juma Mwangi</span>
+                            <span class="text-[10px] text-slate-500 font-mono">SHS-881</span>
+                        </button>
+                        <button onclick="simulateScan('SHS-882')" class="p-2 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded text-xs text-left transition-colors">
+                            <span class="block font-bold text-amber-400">Amina Omondi</span>
+                            <span class="text-[10px] text-slate-500 font-mono">SHS-882</span>
+                        </button>
+                        <button onclick="simulateScan('SHS-883')" class="p-2 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded text-xs text-left transition-colors">
+                            <span class="block font-bold text-red-400">Brian Kiprop</span>
+                            <span class="text-[10px] text-slate-500 font-mono">SHS-883</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-4 bg-slate-950/60 rounded-lg border border-slate-800/80 text-xs text-slate-400 space-y-1">
+                <div class="font-bold text-slate-300">Gate Protocol Note:</div>
+                <p>Green badges indicate cleared status. Red or yellow flags alert guard to fee balances or truancy records, requiring administrative review before compound entry.</p>
+            </div>
+        </div>
+
+        <!-- RIGHT: LIVE VERIFICATION & PHOTO DISPLAY CARD -->
+        <div class="bg-slate-900 border border-slate-800 p-6 rounded-xl flex flex-col justify-between">
+            <h3 class="text-xs font-semibold uppercase text-slate-400 mb-4">Live Verification Display</h3>
+            
+            <div id="displayCard" class="bg-slate-950 border border-slate-800 rounded-xl p-6 text-center space-y-4 flex-1 flex flex-col items-center justify-center">
+                <div class="w-24 h-24 rounded-full bg-slate-800 border-2 border-slate-700 flex items-center justify-center text-3xl font-bold text-slate-500 shadow-inner" id="studentAvatarBox">
+                    📷
+                </div>
+                <div class="space-y-1">
+                    <div id="studentNameText" class="text-lg font-bold text-slate-400">Awaiting Scan...</div>
+                    <div id="studentIdText" class="text-xs font-mono text-slate-500">ID: ---</div>
+                    <div id="studentClassText" class="text-xs text-slate-500">Stream: ---</div>
+                </div>
+                <div id="statusBadge" class="px-4 py-1.5 rounded-full text-xs font-bold bg-slate-800 text-slate-400">
+                    Terminal Ready
+                </div>
+            </div>
+
+            <div class="mt-4 text-center text-[11px] text-slate-500 font-mono" id="timestampText">
+                Timestamp: --:--:-- EAT
+            </div>
+        </div>
+
+    </main>
+
+    <!-- SCRIPT CONTROLLER -->
+    <script>
+        // Mock Student Database
+        const studentDatabase = {
+            "SHS-881": {
+                name: "Juma Mwangi",
+                id: "SHS-881",
+                stream: "Form 1 East",
+                initials: "JM",
+                status: "VERIFIED • CLEARED",
+                statusClass: "bg-emerald-950 text-emerald-400 border border-emerald-800",
+                avatarBorder: "border-emerald-500 text-emerald-400 bg-emerald-950/40"
+            },
+            "SHS-882": {
+                name: "Amina Omondi",
+                id: "SHS-882",
+                stream: "Form 2 North",
+                initials: "AO",
+                status: "WARNING • FEE BALANCE",
+                statusClass: "bg-amber-950 text-amber-400 border border-amber-800",
+                avatarBorder: "border-amber-500 text-amber-400 bg-amber-950/40"
+            },
+            "SHS-883": {
+                name: "Brian Kiprop",
+                id: "SHS-883",
+                stream: "Form 4 South",
+                initials: "BK",
+                status: "DENIED • TRUANCY FLAG",
+                statusClass: "bg-red-950 text-red-400 border border-red-800",
+                avatarBorder: "border-red-500 text-red-400 bg-red-950/40"
+            }
+        };
+
+        function simulateScan(id) {
+            document.getElementById('scanInput').value = id;
+            processScan();
+        }
+
+        function processScan() {
+            const query = document.getElementById('scanInput').value.trim().toUpperCase();
+            const avatarBox = document.getElementById('studentAvatarBox');
+            const nameText = document.getElementById('studentNameText');
+            const idText = document.getElementById('studentIdText');
+            const classText = document.getElementById('studentClassText');
+            const statusBadge = document.getElementById('statusBadge');
+            const timestampText = document.getElementById('timestampText');
+
+            const now = new Date().toLocaleTimeString();
+            timestampText.textContent = `Timestamp: ${now} EAT`;
+
+            if (studentDatabase[query]) {
+                const student = studentDatabase[query];
+                avatarBox.textContent = student.initials;
+                avatarBox.className = `w-24 h-24 rounded-full border-2 flex items-center justify-center text-3xl font-bold shadow-inner ${student.avatarBorder}`;
+                nameText.textContent = student.name;
+                nameText.className = "text-lg font-bold text-white";
+                idText.textContent = `ID: ${student.id}`;
+                classText.textContent = `Stream: ${student.stream}`;
+                statusBadge.textContent = student.status;
+                statusBadge.className = `px-4 py-1.5 rounded-full text-xs font-bold ${student.statusClass}`;
+            } else {
+                avatarBox.textContent = "❌";
+                avatarBox.className = "w-24 h-24 rounded-full bg-red-950/40 border-2 border-red-500 flex items-center justify-center text-3xl font-bold text-red-400 shadow-inner";
+                nameText.textContent = "Unknown ID / Invalid Badge";
+                nameText.className = "text-lg font-bold text-red-400";
+                idText.textContent = `ID: ${query || '---'}`;
+                classText.textContent = "Stream: Unrecognized";
+                statusBadge.textContent = "ACCESS DENIED";
+                statusBadge.className = "px-4 py-1.5 rounded-full text-xs font-bold bg-red-950 text-red-400 border border-red-800";
+            }
+        }
+    </script>
+</body>
+</html>

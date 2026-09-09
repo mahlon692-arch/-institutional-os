@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scholar Engine - Sovereign Orchestrator Nexus</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 50: '#ecfdf5', 500: '#10b981', 600: '#059669', 950: '#022c22' }
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- TOP SOVEREIGN HEADER BAR -->
+    <header class="bg-slate-900 border-b border-slate-800 px-6 py-3.5 flex justify-between items-center z-30">
+        <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 font-bold text-sm">⚡</div>
+            <div>
+                <h1 class="font-bold text-white text-sm tracking-wide">Scholar Engine <span class="text-emerald-400 font-mono text-xs ml-2">[SOVEREIGN NEXUS v4.2]</span></h1>
+                <p class="text-xs text-slate-400">Global Multi-Tenant Master Orchestrator</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-4">
+            <div class="flex items-center gap-2 bg-slate-950 px-3 py-1.5 rounded border border-slate-800 text-xs">
+                <span class="text-slate-400">Active Role View:</span>
+                <select id="roleSwitchSelect" class="bg-transparent text-cyan-400 font-bold focus:outline-none cursor-pointer">
+                    <option value="orchestrator">👑 Sovereign Orchestrator (God Mode)</option>
+                    <option value="principal">🏫 School Principal Command Center</option>
+                    <option value="gate">🛡️ Gate Security Terminal</option>
+                    <option value="chama">💬 Chama & WhatsApp Micro-Feed Hub</option>
+                    <option value="bursary">🏛️ Bursary & Sponsor Clearinghouse</option>
+                </select>
+            </div>
+            <div class="flex items-center gap-2 text-xs font-mono text-emerald-400 bg-emerald-950/40 border border-emerald-800/60 px-2.5 py-1 rounded">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                System Integrity: 100% Secure
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN APP WRAPPER -->
+    <div class="flex flex-1 overflow-hidden">
+        
+        <!-- SIDEBAR NAVIGATION -->
+        <aside class="w-64 bg-slate-900/80 border-r border-slate-800 flex flex-col justify-between hidden md:flex">
+            <div class="p-4 space-y-1 text-sm">
+                <div class="px-3 py-2 text-xs font-semibold uppercase text-slate-500 tracking-wider">Master Navigation</div>
+                <button data-tab="financials" id="nav-financials" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg bg-emerald-600/10 text-emerald-400 font-semibold border border-emerald-500/20 text-left transition-colors">📊 Global Clearinghouse</button>
+                <button data-tab="provisioning" id="nav-provisioning" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white text-left transition-colors">🏢 Tenant & Account Provisioning</button>
+                <button data-tab="exceptions" id="nav-exceptions" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white text-left transition-colors">🚨 Exception & Intervention Desk</button>
+                <button data-tab="audits" id="nav-audits" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white text-left transition-colors">📜 Cryptographic Audit Shield</button>
+            </div>
+            <div class="p-4 border-t border-slate-800 text-xs text-slate-500 space-y-1">
+                <div>Environment: <span class="text-slate-300 font-mono">Production Cloud</span></div>
+                <div>Node Cluster: <span class="text-cyan-400 font-mono">KE-Nairobi-01</span></div>
+            </div>
+        </aside>
+
+        <!-- DYNAMIC CONTENT VIEW CONTAINER -->
+        <main class="flex-1 overflow-y-auto p-6 space-y-6">
+            
+            <!-- TAB 1: GLOBAL FINANCIAL CLEARINGHOUSE -->
+            <div id="tab-financials" class="space-y-6 orchestrator-tab">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl">
+                        <span class="text-xs text-slate-400 uppercase font-semibold">Total National Inflow (24h)</span>
+                        <div id="metricInflow" class="text-2xl font-bold text-emerald-400 mt-1">KES 48,290,100</div>
+                        <span class="text-xs text-emerald-500 mt-2 block">+14.2% velocity vs yesterday</span>
+                    </div>
+                    <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl">
+                        <span class="text-xs text-slate-400 uppercase font-semibold">SaaS Subscription Yield</span>
+                        <div class="text-2xl font-bold text-cyan-400 mt-1">KES 3,420,000</div>
+                        <span class="text-xs text-cyan-500 mt-2 block">Platform fee cut (7%)</span>
+                    </div>
+                    <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl">
+                        <span class="text-xs text-slate-400 uppercase font-semibold">Escrow Holding Balance</span>
+                        <div class="text-2xl font-bold text-amber-400 mt-1">KES 12,850,000</div>
+                        <span class="text-xs text-amber-500 mt-2 block">Locked for NG-CDF disbursement</span>
+                    </div>
+                    <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl">
+                        <span class="text-xs text-slate-400 uppercase font-semibold">Active Tenant Schools</span>
+                        <div id="metricTenants" class="text-2xl font-bold text-white mt-1">342</div>
+                        <span class="text-xs text-slate-400 mt-2 block">Across 47 counties</span>
+                    </div>
+                </div>
+
+                <!-- Financial Chart & Regional Breakdown -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 bg-slate-900 border border-slate-800 p-5 rounded-xl h-80 flex flex-col">
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="text-sm font-bold text-slate-300">National Transaction Velocity & M-Pesa Channel Load</h3>
+                            <span class="text-[10px] font-mono text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded border border-emerald-800 animate-pulse">Live Telemetry Active</span>
+                        </div>
+                        <div class="flex-1 relative"><canvas id="orchestratorFinancialChart"></canvas></div>
+                    </div>
+                    <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl flex flex-col h-80">
+                        <h3 class="text-sm font-bold text-slate-300 mb-3">Top Default Regions</h3>
+                        <div class="space-y-3 text-xs flex-1 overflow-y-auto">
+                            <div class="p-2.5 bg-slate-950 rounded border border-slate-800 flex justify-between items-center">
+                                <div><span class="font-bold text-white">Rift Valley Node</span><span class="block text-slate-400 text-[10px]">18 schools affected</span></div>
+                                <span class="text-red-400 font-bold">KES 8.4M Default</span>
+                            </div>
+                            <div class="p-2.5 bg-slate-950 rounded border border-slate-800 flex justify-between items-center">
+                                <div><span class="font-bold text-white">Coast Region</span><span class="block text-slate-400 text-[10px]">12 schools affected</span></div>
+                                <span class="text-amber-400 font-bold">KES 5.1M Default</span>
+                            </div>
+                            <div class="p-2.5 bg-slate-950 rounded border border-slate-800 flex justify-between items-center">
+                                <div><span class="font-bold text-white">Nairobi Metro</span><span class="block text-slate-400 text-[10px]">45 schools affected</span></div>
+                                <span class="text-emerald-400 font-bold">KES 2.3M Default</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: TENANT & ACCOUNT PROVISIONING -->
+            <div id="tab-provisioning" class="space-y-6 orchestrator-tab hidden">
+                <div class="bg-slate-900 border border-slate-800 p-6 rounded-xl max-w-3xl">
+                    <h3 class="text-base font-bold text-emerald-400 mb-1">Global Tenant & Entity Provisioning Engine</h3>
+                    <p class="text-xs text-slate-400 mb-6">Cryptographically generate new institutional tenants, regional ministry compliance nodes, or verified NG-CDF sponsor accounts with persistent state validation.</p>
+                    
+                    <form id="provisioningForm" class="space-y-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">Entity Type</label>
+                                <select id="provEntityType" class="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-slate-200 text-xs focus:outline-none focus:border-emerald-500">
+                                    <option value="school">School Institution (Tenant)</option>
+                                    <option value="sponsor">NG-CDF Sponsor / Politician</option>
+                                    <option value="ministry">Ministry / KEMIS Compliance Node</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">Entity Name / Region</label>
+                                <input type="text" id="provEntityName" required placeholder="e.g., Eldoret High School" class="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-slate-200 text-xs focus:outline-none focus:border-emerald-500">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">Assigned Administrator Email</label>
+                                <input type="email" id="provAdminEmail" required placeholder="admin@eldorethigh.ac.ke" class="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-slate-200 text-xs focus:outline-none focus:border-emerald-500">
+                                <span id="emailError" class="text-[10px] text-red-400 hidden mt-1">Please enter a valid institutional or standard email address.</span>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">Initial Credit Limit / Escrow (KES)</label>
+                                <input type="number" id="provEscrow" min="10000" value="500000" class="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-slate-200 text-xs focus:outline-none focus:border-emerald-500">
+                            </div>
+                        </div>
+                        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold py-2 rounded text-xs transition-colors">Initialize & Generate Cryptographic Keys</button>
+                    </form>
+                    <div id="provisioningOutput" class="mt-4 hidden p-3 bg-slate-950 rounded border border-emerald-500/30 text-xs font-mono text-cyan-400 space-y-1">
+                        <div>Status: Tenant successfully provisioned and synced to state ledger.</div>
+                        <div>JWT Token: <span id="generatedTokenText" class="text-emerald-400"></span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: EXCEPTION & INTERVENTION DESK -->
+            <div id="tab-exceptions" class="space-y-6 orchestrator-tab hidden">
+                <div class="bg-slate-900 border border-slate-800 p-6 rounded-xl">
+                    <h3 class="text-base font-bold text-amber-400 mb-1">Global Exception & Pipeline Diagnostics</h3>
+                    <p class="text-xs text-slate-400 mb-4">Real-time telemetry flagging KEMIS synchronization errors, M-Pesa webhook timeouts, or escalated fee discrepancies with live database reconciliation.</p>
+                    
+                    <div id="exceptionList" class="space-y-2 text-xs">
+                        <div class="exception-item p-3 bg-slate-950 border border-amber-500/30 rounded flex justify-between items-center" data-id="exc-1">
+                            <div>
+                                <span class="font-bold text-amber-300">[KEMIS Sync Timeout]</span> Tenant ID: <span class="font-mono text-cyan-400">shiners_high_school</span> failed to push termly audit log.
+                                <span class="block text-slate-500 text-[10px] mt-0.5">Timestamp: 2026-07-28 17:42:10 EAT</span>
+                            </div>
+                            <button class="resolve-btn px-3 py-1.5 bg-amber-600/20 border border-amber-500 text-amber-400 hover:bg-amber-600 hover:text-slate-950 font-bold rounded transition-colors">Force Sync Override</button>
+                        </div>
+                        <div class="exception-item p-3 bg-slate-950 border border-red-500/30 rounded flex justify-between items-center" data-id="exc-2">
+                            <div>
+                                <span class="font-bold text-red-400">[M-Pesa Webhook Mismatch]</span> Gateway transaction hash <span class="font-mono text-cyan-400">TR-88492</span> unlinked from student ledger.
+                                <span class="block text-slate-500 text-[10px] mt-0.5">Timestamp: 2026-07-28 17:39:02 EAT</span>
+                            </div>
+                            <button class="resolve-btn px-3 py-1.5 bg-red-600/20 border border-red-500 text-red-400 hover:bg-red-600 hover:text-slate-950 font-bold rounded transition-colors">Reconcile Ledger</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 4: CRYPTOGRAPHIC AUDIT SHIELD -->
+            <div id="tab-audits" class="space-y-6 orchestrator-tab hidden">
+                <div class="bg-slate-900 border border-slate-800 p-6 rounded-xl">
+                    <h3 class="text-base font-bold text-cyan-400 mb-1">Immutable Append-Only Audit Trail</h3>
+                    <p class="text-xs text-slate-400 mb-4">Cryptographic proof of every administrative override, permission change, and fund disbursement across the national platform.</p>
+                    
+                    <div id="auditTrailList" class="space-y-2 text-xs font-mono">
+                        <div class="p-2.5 bg-slate-950 rounded border border-slate-800 flex justify-between items-center">
+                            <span class="text-emerald-400">[AUDIT-9012]</span>
+                            <span class="text-slate-300">Tenant `nairobi_central_high` fee ceiling updated by Sovereign Orchestrator.</span>
+                            <span class="text-slate-500">17:40:12 EAT</span>
+                        </div>
+                        <div class="p-2.5 bg-slate-950 rounded border border-slate-800 flex justify-between items-center">
+                            <span class="text-cyan-400">[AUDIT-9011]</span>
+                            <span class="text-slate-300">NG-CDF Bursary tranche disbursed: KES 2,500,000 to Kiambu County.</span>
+                            <span class="text-slate-500">17:15:00 EAT</span>
+                        </div>
+                        <div class="p-2.5 bg-slate-950 rounded border border-slate-800 flex justify-between items-center">
+                            <span class="text-amber-400">[AUDIT-9010]</span>
+                            <span class="text-slate-300">Staff RBAC token generated for Principal (Shiners High).</span>
+                            <span class="text-slate-500">16:50:22 EAT</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- SCRIPT CONTROLLER -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const navButtons = document.querySelectorAll('aside button[data-tab]');
+            const tabs = document.querySelectorAll('.orchestrator-tab');
+
+            navButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetTabId = 'tab-' + button.getAttribute('data-tab');
+                    
+                    tabs.forEach(tab => tab.classList.add('hidden'));
+                    document.getElementById(targetTabId).classList.remove('hidden');
+
+                    navButtons.forEach(btn => {
+                        btn.className = "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white text-left transition-colors";
+                    });
+                    button.className = "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg bg-emerald-600/10 text-emerald-400 font-semibold border border-emerald-500/20 text-left transition-colors";
+                });
+            });
+
+            const roleSelect = document.getElementById('roleSwitchSelect');
+            roleSelect.addEventListener('change', (e) => {
+                const selectedRole = e.target.value;
+                if (selectedRole !== 'orchestrator') {
+                    alert(`Switching perspective view to: [${selectedRole.toUpperCase()}]. Delegated workspace view loaded with active sovereign override keys.`);
+                }
+            });
+
+            const provForm = document.getElementById('provisioningForm');
+            provForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const name = document.getElementById('provEntityName').value.trim();
+                const type = document.getElementById('provEntityType').value;
+                const email = document.getElementById('provAdminEmail').value.trim();
+                const emailError = document.getElementById('emailError');
+
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    emailError.classList.remove('hidden');
+                    return;
+                }
+                emailError.classList.add('hidden');
+
+                const token = 'SE_SOV_JWT_' + Math.random().toString(36).substring(2, 15).toUpperCase();
+                
+                const existingTenants = JSON.parse(localStorage.getItem('scholar_tenants') || '[]');
+                existingTenants.push({ name, type, email, token, timestamp: new Date().toISOString() });
+                localStorage.setItem('scholar_tenants', JSON.stringify(existingTenants));
+
+                const tenantMetric = document.getElementById('metricTenants');
+                if (tenantMetric) {
+                    tenantMetric.textContent = parseInt(tenantMetric.textContent) + 1;
+                }
+
+                document.getElementById('generatedTokenText').textContent = token;
+                document.getElementById('provisioningOutput').classList.remove('hidden');
+                alert(`Entity [${name}] (${type}) successfully provisioned and synchronized to the national ledger.`);
+            });
+
+            const exceptionList = document.getElementById('exceptionList');
+            exceptionList.addEventListener('click', (e) => {
+                if (e.target.classList.contains('resolve-btn')) {
+                    const item = e.target.closest('.exception-item');
+                    const excId = item.getAttribute('data-id');
+                    
+                    item.style.opacity = '0.4';
+                    e.target.textContent = 'Resolved ✓';
+                    e.target.disabled = true;
+                    e.target.className = "px-3 py-1.5 bg-emerald-950 border border-emerald-500 text-emerald-400 font-bold rounded";
+
+                    const resolvedExceptions = JSON.parse(localStorage.getItem('resolved_exceptions') || '[]');
+                    resolvedExceptions.push(excId);
+                    localStorage.setItem('resolved_exceptions', JSON.stringify(resolvedExceptions));
+                }
+            });
+
+            const savedResolved = JSON.parse(localStorage.getItem('resolved_exceptions') || '[]');
+            savedResolved.forEach(id => {
+                const el = document.querySelector(`[data-id="${id}"]`);
+                if (el) {
+                    el.style.opacity = '0.4';
+                    const btn = el.querySelector('button');
+                    if (btn) {
+                        btn.textContent = 'Resolved ✓';
+                        btn.disabled = true;
+                        btn.className = "px-3 py-1.5 bg-emerald-950 border border-emerald-500 text-emerald-400 font-bold rounded";
+                    }
+                }
+            });
+
+            const ctx = document.getElementById('orchestratorFinancialChart').getContext('2d');
+            const financialChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['08:00', '10:00', '12:00', '14:00', '16:00', '18:00'],
+                    datasets: [{
+                        label: 'National M-Pesa Inflow Velocity (KES Millions)',
+                        data: [4.2, 8.5, 15.1, 22.4, 34.8, 48.2],
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { labels: { color: '#cbd5e1', font: { size: 11 } } } },
+                    scales: {
+                        x: { ticks: { color: '#94a3b8' }, grid: { color: '#334155' } },
+                        y: { ticks: { color: '#94a3b8' }, grid: { color: '#334155' } }
+                    }
+                }
+            });
+
+            setInterval(() => {
+                const labels = financialChart.data.labels;
+                const dataSet = financialChart.data.datasets[0].data;
+                
+                const now = new Date();
+                const timeLabel = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+                
+                if (labels[labels.length - 1] !== timeLabel) {
+                    labels.push(timeLabel);
+                    if (labels.length > 8) labels.shift();
+
+                    const lastVal = dataSet[dataSet.length - 1];
+                    const newVal = parseFloat((lastVal + (Math.random() * 3)).toFixed(1));
+                    dataSet.push(newVal);
+                    if (dataSet.length > 8) dataSet.shift();
+
+                    financialChart.update();
+
+                    const inflowEl = document.getElementById('metricInflow');
+                    if (inflowEl) {
+                        const currentNum = Math.round(newVal * 1000000);
+                        inflowEl.textContent = 'KES ' + currentNum.toLocaleString();
+                    }
+                }
+            }, 10000);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parent Portal | Institutional OS</title>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; background: #f3f4f6; margin: 0; padding: 20px; color: #1f2937; }
+        .container { max-width: 600px; margin: 40px auto; background: #ffffff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h1 { color: #1e3a8a; font-size: 24px; margin-top: 0; border-bottom: 2px solid #e5e7eb; padding-bottom: 10px; }
+        .info-group { margin: 15px 0; display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f3f4f6; }
+        .label { font-weight: 600; color: #4b5563; }
+        .value { color: #111827; }
+        .badge { background: #dbeafe; color: #1e40af; padding: 4px 10px; border-radius: 20px; font-size: 14px; font-weight: 500; }
+        .footer { margin-top: 30px; text-align: center; font-size: 12px; color: #9ca3af; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Institutional Student Portal</h1>
+        <div class="info-group">
+            <span class="label">Institution:</span>
+            <span class="value"><%= student.institution_name %></span>
+        </div>
+        <div class="info-group">
+            <span class="label">Student Name:</span>
+            <span class="value"><%= student.first_name %> <%= student.last_name %></span>
+        </div>
+        <div class="info-group">
+            <span class="label">Admission Number:</span>
+            <span class="value"><span class="badge"><%= student.admission_number %></span></span>
+        </div>
+        <div class="info-group">
+            <span class="label">Current Grade / Stream:</span>
+            <span class="value">Grade <%= student.current_grade %> (<%= student.current_stream %>)</span>
+        </div>
+        <div class="info-group">
+            <span class="label">Total Fees Paid:</span>
+            <span class="value" style="color: #059669; font-weight: bold;">KES <%= student.total_paid %></span>
+        </div>
+        <div class="footer">
+            Institutional OS &bull; Secure Decentralized Education Gateway
+        </div>
+    </div>
+</body>
+</html>

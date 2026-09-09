@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scholar Engine - University Registrar Command</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 50: '#ecfdf5', 500: '#10b981', 600: '#059669', 950: '#022c22' }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- TOP HEADER -->
+    <header class="bg-slate-900 border-b border-slate-800 px-6 py-3.5 flex justify-between items-center z-30">
+        <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded bg-indigo-500/20 border border-indigo-500/40 flex items-center justify-center text-indigo-400 font-bold text-sm">🏛️</div>
+            <div>
+                <h1 class="font-bold text-white text-sm tracking-wide">University Registrar Portal <span class="text-indigo-400 font-mono text-xs ml-2">[HE-MODULE v1.0]</span></h1>
+                <p class="text-xs text-slate-400">Higher Education Academic & Senate Command</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-3 text-xs font-mono text-indigo-400 bg-indigo-950/40 border border-indigo-800/60 px-3 py-1 rounded">
+            <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span>
+            Semester: 2026/2027 Academic Year (Sem I)
+        </div>
+    </header>
+
+    <!-- MAIN WRAPPER -->
+    <div class="flex flex-1 overflow-hidden">
+        <!-- SIDEBAR -->
+        <aside class="w-64 bg-slate-900/80 border-r border-slate-800 flex flex-col p-4 space-y-1 text-sm hidden md:flex">
+            <div class="px-3 py-2 text-xs font-semibold uppercase text-slate-500 tracking-wider">Registrar Navigation</div>
+            <button onclick="switchTab('courses')" id="btn-courses" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg bg-indigo-600/10 text-indigo-400 font-semibold border border-indigo-500/20 text-left">🎓 Faculty & Course Matrix</button>
+            <button onclick="switchTab('faculties')" id="btn-faculties" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800 text-left">🏢 Faculty & Department Matrix</button>
+            <button onclick="switchTab('senate')" id="btn-senate" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800 text-left">📜 Senate Graduation Audit</button>
+        </aside>
+
+        <!-- CONTENT AREA -->
+        <main class="flex-1 overflow-y-auto p-6 space-y-6">
+            
+            <!-- TAB 1: COURSES (Your Existing Code Preserved) -->
+            <div id="tab-courses" class="space-y-6">
+                <div class="bg-slate-900 border border-slate-800 p-6 rounded-xl">
+                    <h3 class="text-base font-bold text-indigo-400 mb-1">Dynamic Credit-Hour Course Registry</h3>
+                    <p class="text-xs text-slate-400 mb-4">Define university course units, contact hours, and faculty weightings decoupled from rigid K-12 grading.</p>
+                    
+                    <form id="courseRegistryForm" class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                        <div>
+                            <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">Course Code</label>
+                            <input type="text" id="courseCode" required placeholder="e.g., BIT-3101" class="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-slate-200 text-xs focus:outline-none focus:border-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">Course Name</label>
+                            <input type="text" id="courseName" required placeholder="Advanced Distributed Systems" class="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-slate-200 text-xs focus:outline-none focus:border-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">Credit Units</label>
+                            <input type="number" id="creditUnits" min="1" max="6" value="3" class="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-slate-200 text-xs focus:outline-none focus:border-indigo-500">
+                        </div>
+                        <div class="flex items-end">
+                            <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 rounded text-xs transition-colors">Register Unit</button>
+                        </div>
+                    </form>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-slate-950 text-slate-400 uppercase font-mono border-b border-slate-800">
+                                <tr>
+                                    <th class="p-3">Code</th>
+                                    <th class="p-3">Course Title</th>
+                                    <th class="p-3">Credits</th>
+                                    <th class="p-3">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="courseTableBody" class="divide-y divide-slate-800 text-slate-300">
+                                <tr>
+                                    <td class="p-3 font-mono text-cyan-400">SCS-2201</td>
+                                    <td class="p-3">Object-Oriented Systems Architecture</td>
+                                    <td class="p-3">4 Units</td>
+                                    <td class="p-3 text-emerald-400 font-semibold">Active Senate Approved</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: FACULTIES & DEPARTMENTS -->
+            <div id="tab-faculties" class="space-y-6 hidden">
+                <div class="bg-slate-900 border border-slate-800 p-6 rounded-xl">
+                    <h3 class="text-base font-bold text-indigo-400 mb-1">Faculty & Departmental Mapping Matrix</h3>
+                    <p class="text-xs text-slate-400 mb-4">Structure organizational faculties, departments, and academic leadership assignments.</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                        <div class="bg-slate-950 border border-slate-800 p-4 rounded-lg">
+                            <h4 class="font-bold text-sm text-white mb-2">Faculty of Computing & Informatics</h4>
+                            <p class="text-xs text-slate-400 mb-3">Depts: Computer Science, IT, Software Engineering</p>
+                            <span class="text-[10px] font-mono bg-indigo-950 text-indigo-400 px-2 py-1 rounded border border-indigo-800">Dean: Dr. K. Omondi</span>
+                        </div>
+                        <div class="bg-slate-950 border border-slate-800 p-4 rounded-lg">
+                            <h4 class="font-bold text-sm text-white mb-2">Faculty of Engineering & Technology</h4>
+                            <p class="text-xs text-slate-400 mb-3">Depts: Electrical, Mechanical, Civil Engineering</p>
+                            <span class="text-[10px] font-mono bg-indigo-950 text-indigo-400 px-2 py-1 rounded border border-indigo-800">Dean: Prof. A. Wanjiru</span>
+                        </div>
+                        <div class="bg-slate-950 border border-slate-800 p-4 rounded-lg">
+                            <h4 class="font-bold text-sm text-white mb-2">School of Business & Economics</h4>
+                            <p class="text-xs text-slate-400 mb-3">Depts: Accounting, Finance, Management Science</p>
+                            <span class="text-[10px] font-mono bg-indigo-950 text-indigo-400 px-2 py-1 rounded border border-indigo-800">Dean: Dr. M. Koech</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: SENATE AUDIT -->
+            <div id="tab-senate" class="space-y-6 hidden">
+                <div class="bg-slate-900 border border-slate-800 p-6 rounded-xl">
+                    <h3 class="text-base font-bold text-indigo-400 mb-1">Senate Graduation & Clearance Audit Log</h3>
+                    <p class="text-xs text-slate-400 mb-4">Verify cumulative credit units, zero fee balances, and ratify final graduation lists.</p>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-slate-950 text-slate-400 uppercase font-mono border-b border-slate-800">
+                                <tr>
+                                    <th class="p-3">Reg Number</th>
+                                    <th class="p-3">Student Name</th>
+                                    <th class="p-3">Program</th>
+                                    <th class="p-3">Credits Earned</th>
+                                    <th class="p-3">Fee Status</th>
+                                    <th class="p-3">Senate Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-800 text-slate-300">
+                                <tr>
+                                    <td class="p-3 font-mono text-cyan-400">BIT/2024/0491</td>
+                                    <td class="p-3">Mahlon K.</td>
+                                    <td class="p-3">BSc. Software Engineering</td>
+                                    <td class="p-3 font-mono">132 / 120</td>
+                                    <td class="p-3 text-emerald-400 font-semibold">Cleared (KES 0.00)</td>
+                                    <td class="p-3 text-emerald-400 font-bold">APPROVED GRADUAND</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        function switchTab(tabId) {
+            ['courses', 'faculties', 'senate'].forEach(t => {
+                document.getElementById(`tab-${t}`).classList.add('hidden');
+                document.getElementById(`btn-${t}`).classList.remove('bg-indigo-600/10', 'text-indigo-400', 'font-semibold', 'border', 'border-indigo-500/20');
+                document.getElementById(`btn-${t}`).classList.add('text-slate-300', 'hover:bg-slate-800');
+            });
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+            document.getElementById(`btn-${tabId}`).classList.remove('text-slate-300', 'hover:bg-slate-800');
+            document.getElementById(`btn-${tabId}`).classList.add('bg-indigo-600/10', 'text-indigo-400', 'font-semibold', 'border', 'border-indigo-500/20');
+        }
+
+        document.getElementById('courseRegistryForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const code = document.getElementById('courseCode').value.trim();
+            const name = document.getElementById('courseName').value.trim();
+            const credits = document.getElementById('creditUnits').value;
+
+            const tbody = document.getElementById('courseTableBody');
+            const row = document.createElement('tr');
+            row.className = "hover:bg-slate-950/50";
+            row.innerHTML = `
+                <td class="p-3 font-mono text-cyan-400">${code}</td>
+                <td class="p-3">${name}</td>
+                <td class="p-3">${credits} Units</td>
+                <td class="p-3 text-indigo-400 font-semibold">Pending Senate Verification</td>
+            `;
+            tbody.appendChild(row);
+            e.target.reset();
+        });
+    </script>
+</body>
+</html>

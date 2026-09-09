@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scholar Engine - Student Campus Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 50: '#ecfdf5', 500: '#10b981', 600: '#059669', 950: '#022c22' }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- TOP HEADER -->
+    <header class="bg-slate-900 border-b border-slate-800 px-6 py-3.5 flex justify-between items-center z-30">
+        <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 font-bold text-sm">🎓</div>
+            <div>
+                <h1 class="font-bold text-white text-sm tracking-wide">Student Campus Portal <span class="text-emerald-400 font-mono text-xs ml-2">[AUTONOMOUS WALLET]</span></h1>
+                <p class="text-xs text-slate-400">Reg: BIT/2024/0491 | Mahlon K.</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-3 text-xs font-mono text-emerald-400 bg-emerald-950/40 border border-emerald-800/60 px-3 py-1 rounded">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            HEF Funding Band: Less Needy (Band 3)
+        </div>
+    </header>
+
+    <!-- MAIN WRAPPER -->
+    <main class="flex-1 p-6 max-w-7xl mx-auto w-full space-y-6">
+        
+        <!-- FINANCIAL & SMART WALLET ROW -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Institutional Tuition Ledger -->
+            <div class="bg-slate-900 border border-slate-800 p-6 rounded-xl relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-4 text-indigo-500/10 font-bold text-6xl font-mono">TUITION</div>
+                <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Institutional Tuition Balance</h3>
+                <div class="text-2xl font-mono font-bold text-white mb-2">KES 14,500 <span class="text-xs text-amber-400 font-normal">Due Sem I</span></div>
+                <p class="text-xs text-slate-400 mb-4">Pass-through ledger covered partially by government scholarship and HEF student loan.</p>
+                <button class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-4 py-2 rounded transition-colors">View Fee Statement</button>
+            </div>
+
+            <!-- Student Autonomous Smart Wallet (HELB Upkeep / Pocket Money) -->
+            <div class="bg-slate-900 border border-emerald-500/30 p-6 rounded-xl relative overflow-hidden bg-gradient-to-br from-slate-900 to-emerald-950/20">
+                <div class="absolute top-0 right-0 p-4 text-emerald-500/10 font-bold text-6xl font-mono">WALLET</div>
+                <h3 class="text-xs font-semibold uppercase tracking-wider text-emerald-400 mb-1">Independent Smart Wallet (Upkeep)</h3>
+                <div class="text-2xl font-mono font-bold text-emerald-400 mb-2">KES 6,250.00 <span class="text-xs text-slate-400 font-normal">Available Balance</span></div>
+                <p class="text-xs text-slate-400 mb-4">Direct HELB/Upkeep disbursement pocket. Strictly under your independent control (zero parental or administrative interference).</p>
+                <div class="flex gap-3">
+                    <button class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-2 rounded transition-colors">Spend / Tap ID</button>
+                    <button class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold px-4 py-2 rounded transition-colors">Withdraw / M-Pesa</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TIMETABLE & GATE-RELATIVE NAVIGATION ROW -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Lecture Timetable -->
+            <div class="md:col-span-2 bg-slate-900 border border-slate-800 p-6 rounded-xl">
+                <h3 class="text-base font-bold text-white mb-1">Today's Class Schedule (No WhatsApp Chaos)</h3>
+                <p class="text-xs text-slate-400 mb-4">Real-time verified timetable linked directly to lecture hall coordinate mapping.</p>
+                
+                <div class="space-y-3">
+                    <div class="bg-slate-950 border border-slate-800 p-4 rounded-lg flex justify-between items-center">
+                        <div>
+                            <span class="text-[10px] font-mono text-cyan-400 bg-cyan-950/50 px-2 py-0.5 rounded border border-cyan-800">08:00 AM - 10:00 AM</span>
+                            <h4 class="font-bold text-sm text-white mt-1">SCS-3101: Distributed Systems</h4>
+                            <p class="text-xs text-slate-400">Venue: Science Complex, Lab 4</p>
+                        </div>
+                        <span class="text-xs font-bold text-emerald-400 bg-emerald-950 px-3 py-1 rounded border border-emerald-800">In 15 Mins</span>
+                    </div>
+
+                    <div class="bg-slate-950 border border-slate-800 p-4 rounded-lg flex justify-between items-center">
+                        <div>
+                            <span class="text-[10px] font-mono text-cyan-400 bg-cyan-950/50 px-2 py-0.5 rounded border border-cyan-800">02:00 PM - 04:00 PM</span>
+                            <h4 class="font-bold text-sm text-white mt-1">BIT-3103: Enterprise Architecture</h4>
+                            <p class="text-xs text-slate-400">Venue: Business School, Lecture Hall B</p>
+                        </div>
+                        <span class="text-xs font-semibold text-slate-400">Upcoming</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gate-Relative Campus Navigation -->
+            <div class="bg-slate-900 border border-slate-800 p-6 rounded-xl flex flex-col justify-between">
+                <div>
+                    <h3 class="text-base font-bold text-white mb-1">🧭 Campus GPS Navigator</h3>
+                    <p class="text-xs text-slate-400 mb-4">Indoor positioning measured from Main Gate (0,0).</p>
+                    
+                    <div class="bg-slate-950 border border-slate-800 p-4 rounded-lg space-y-2 text-xs font-mono">
+                        <div class="flex justify-between text-slate-400">
+                            <span>Current Location:</span>
+                            <span class="text-white">Main Gate (0,0)</span>
+                        </div>
+                        <div class="flex justify-between text-slate-400">
+                            <span>Destination:</span>
+                            <span class="text-cyan-400">Science Complex</span>
+                        </div>
+                        <div class="flex justify-between text-slate-400">
+                            <span>Distance:</span>
+                            <span class="text-emerald-400 font-bold">240 meters</span>
+                        </div>
+                        <div class="flex justify-between text-slate-400">
+                            <span>Estimated Walk:</span>
+                            <span class="text-white">3 mins</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="mt-4 w-full bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold py-2 rounded transition-colors">Start Turn-by-Turn Route</button>
+            </div>
+        </div>
+
+    </main>
+
+</body>
+</html>

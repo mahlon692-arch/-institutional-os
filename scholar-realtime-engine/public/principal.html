@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-950 text-slate-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Institutional Command & Control Center</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js Engine -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        /* Custom scrollbars */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #020617; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #334155; }
+    </style>
+</head>
+<body class="h-full flex overflow-hidden font-sans antialiased text-slate-300">
+
+    <!-- SIDE NAVIGATION ARCHITECTURE -->
+    <aside class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col justify-between shrink-0 select-none z-20">
+        <div class="p-4">
+            <!-- Institutional Header -->
+            <div class="flex items-center space-x-3 px-2 py-3 mb-6 border-b border-slate-800/80">
+                <div class="w-9 h-9 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+                    <i class="fa-solid fa-shield-halved text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="text-xs font-black tracking-widest text-slate-100 uppercase">Academix OS</h1>
+                    <p class="text-[10px] font-mono text-emerald-500">v4.2 PROD // LIVE</p>
+                </div>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="space-y-1" id="main-nav">
+                <button onclick="switchTab('telemetry')" id="nav-telemetry" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                    <i class="fa-solid fa-chart-network w-5 text-center"></i>
+                    <span>Telemetry Matrix</span>
+                </button>
+                <button onclick="switchTab('analytics')" id="nav-analytics" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-400 hover:bg-slate-800 hover:text-slate-200 border border-transparent">
+                    <i class="fa-solid fa-chart-line w-5 text-center"></i>
+                    <span>Multi-Term Analytics</span>
+                </button>
+                <button onclick="switchTab('subject-drill')" id="nav-subject-drill" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-400 hover:bg-slate-800 hover:text-slate-200 border border-transparent">
+                    <i class="fa-solid fa-diagram-project w-5 text-center"></i>
+                    <span>Subject Performance Drill</span>
+                </button>
+                <button onclick="switchTab('attendance')" id="nav-attendance" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-400 hover:bg-slate-800 hover:text-slate-200 border border-transparent">
+                    <i class="fa-solid fa-door-open w-5 text-center"></i>
+                    <span>Gate & Attendance Stream</span>
+                </button>
+                <button onclick="switchTab('provisioning')" id="nav-provisioning" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-400 hover:bg-slate-800 hover:text-slate-200 border border-transparent">
+                    <i class="fa-solid fa-key-skeleton w-5 text-center"></i>
+                    <span>User Provisioning</span>
+                </button>
+            </nav>
+        </div>
+
+        <!-- System User Footer -->
+        <div class="p-4 border-t border-slate-800 bg-slate-900/50">
+            <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center font-bold text-xs text-slate-200">
+                    AD
+                </div>
+                <div class="overflow-hidden">
+                    <p class="text-xs font-bold text-slate-200 truncate">System Administrator</p>
+                    <p class="text-[10px] text-slate-500 font-mono truncate">ID: #9902-SEC</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN DASHBOARD CONTENT AREA -->
+    <main class="flex-1 flex flex-col h-full overflow-hidden relative">
+
+        <!-- GLOBAL HEADER / COMMAND BAR -->
+        <header class="h-16 border-b border-slate-800 px-6 flex items-center justify-between bg-slate-900/40 shrink-0">
+            <div class="flex items-center space-x-4">
+                <h2 id="view-title" class="text-base font-bold text-slate-100 flex items-center space-x-2">
+                    <i class="fa-solid fa-border-all text-emerald-400"></i>
+                    <span>Institutional Command & Control View</span>
+                </h2>
+            </div>
+            <div class="flex items-center space-x-3">
+                <button onclick="exportExecutiveBrief()" class="px-3 py-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-semibold flex items-center space-x-2 transition-all">
+                    <i class="fa-solid fa-file-export"></i>
+                    <span>Export Brief</span>
+                </button>
+                <button onclick="openStudentDrawer('#01-102')" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-semibold flex items-center space-x-2 transition-all">
+                    <i class="fa-solid fa-address-card"></i>
+                    <span>Quick 360° Inspection</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- CANVAS WORKSPACE -->
+        <div class="flex-1 overflow-y-auto p-6 space-y-6">
+
+            <!-- TAB 1: TELEMETRY MATRIX -->
+            <section id="tab-telemetry" class="tab-content active space-y-6">
+                <!-- Stat KPI Highlights -->
+                <div class="grid grid-cols-4 gap-4">
+                    <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-xl">
+                        <p class="text-xs font-mono text-slate-400">TOTAL POPULATION</p>
+                        <h3 class="text-2xl font-black text-slate-100 mt-1">1,480</h3>
+                        <p class="text-[10px] text-emerald-400 mt-1 font-mono"><i class="fa-solid fa-arrow-trend-up"></i> +4.2% from last term</p>
+                    </div>
+                    <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-xl">
+                        <p class="text-xs font-mono text-slate-400">OPTIMAL STATUS</p>
+                        <h3 class="text-2xl font-black text-emerald-400 mt-1">1,392</h3>
+                        <p class="text-[10px] text-slate-400 mt-1 font-mono">94.0% Active operations</p>
+                    </div>
+                    <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-xl">
+                        <p class="text-xs font-mono text-slate-400">AT-RISK TELEMETRY</p>
+                        <h3 class="text-2xl font-black text-rose-400 mt-1">48</h3>
+                        <p class="text-[10px] text-rose-400 mt-1 font-mono"><i class="fa-solid fa-triangle-exclamation"></i> Immediate action required</p>
+                    </div>
+                    <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-xl">
+                        <p class="text-xs font-mono text-slate-400">FINANCIAL / KEMIS HOLDS</p>
+                        <h3 class="text-2xl font-black text-amber-400 mt-1">40</h3>
+                        <p class="text-[10px] text-slate-400 mt-1 font-mono">Pending verification</p>
+                    </div>
+                </div>
+
+                <!-- Matrix Container -->
+                <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-5 space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                        <div>
+                            <h3 class="text-sm font-bold text-slate-200 flex items-center space-x-2">
+                                <i class="fa-solid fa-grid-2 text-emerald-400"></i>
+                                <span>Real-Time Institutional Student Telemetry Matrix</span>
+                            </h3>
+                            <p class="text-xs text-slate-400">Click individual data nodes to inspect telemetry status</p>
+                        </div>
+                        <div class="flex items-center space-x-1 text-xs font-mono bg-slate-950 p-1 rounded-lg border border-slate-800">
+                            <button onclick="filterDots('all')" class="dot-filter-btn px-2.5 py-1 rounded bg-emerald-500/20 text-emerald-400 font-bold transition-all">ALL</button>
+                            <button onclick="filterDots('optimal')" class="dot-filter-btn px-2.5 py-1 rounded text-slate-400 hover:text-slate-200 transition-all">OPTIMAL</button>
+                            <button onclick="filterDots('risk')" class="dot-filter-btn px-2.5 py-1 rounded text-slate-400 hover:text-slate-200 transition-all">RISK</button>
+                            <button onclick="filterDots('hold')" class="dot-filter-btn px-2.5 py-1 rounded text-slate-400 hover:text-slate-200 transition-all">HOLD</button>
+                            <button onclick="filterDots('kemis')" class="dot-filter-btn px-2.5 py-1 rounded text-slate-400 hover:text-slate-200 transition-all">KEMIS</button>
+                        </div>
+                    </div>
+
+                    <!-- Visual Matrix Dots Grid -->
+                    <div id="dots-grid" class="flex flex-wrap gap-2.5 p-4 bg-slate-950/60 rounded-lg border border-slate-800/60 min-h-[160px] items-center">
+                        <!-- Rendered by JS -->
+                    </div>
+                </div>
+
+                <!-- Interactive Pearson Correlation Matrix -->
+                <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-5 space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                        <div>
+                            <h3 class="text-sm font-bold text-slate-200 flex items-center space-x-2">
+                                <i class="fa-solid fa-chart-network text-emerald-400"></i>
+                                <span>Pearson Correlation Matrix (Attendance vs. Performance vs. Fee Compliance)</span>
+                            </h3>
+                        </div>
+                        <button onclick="exportData('Pearson Correlation Matrix Data')" class="text-xs text-slate-400 hover:text-slate-200 font-mono">
+                            <i class="fa-solid fa-download"></i> CSV
+                        </button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-xs text-left font-mono">
+                            <thead class="bg-slate-950 text-slate-400 uppercase">
+                                <tr>
+                                    <th class="p-3 border-b border-slate-800">Variables</th>
+                                    <th class="p-3 border-b border-slate-800">Attendance Rate</th>
+                                    <th class="p-3 border-b border-slate-800">Mean Grade Score</th>
+                                    <th class="p-3 border-b border-slate-800">Fee Compliance</th>
+                                    <th class="p-3 border-b border-slate-800">KEMIS Verification</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-800/60">
+                                <tr>
+                                    <td class="p-3 font-bold text-slate-200">Attendance Rate</td>
+                                    <td class="p-3 bg-emerald-500/20 text-emerald-400 font-bold">1.000</td>
+                                    <td class="p-3 bg-emerald-500/10 text-emerald-300">+0.782</td>
+                                    <td class="p-3 text-slate-400">+0.412</td>
+                                    <td class="p-3 text-slate-400">+0.105</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 font-bold text-slate-200">Mean Grade Score</td>
+                                    <td class="p-3 bg-emerald-500/10 text-emerald-300">+0.782</td>
+                                    <td class="p-3 bg-emerald-500/20 text-emerald-400 font-bold">1.000</td>
+                                    <td class="p-3 text-slate-400">+0.329</td>
+                                    <td class="p-3 text-slate-400">+0.088</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 font-bold text-slate-200">Fee Compliance</td>
+                                    <td class="p-3 text-slate-400">+0.412</td>
+                                    <td class="p-3 text-slate-400">+0.329</td>
+                                    <td class="p-3 bg-emerald-500/20 text-emerald-400 font-bold">1.000</td>
+                                    <td class="p-3 text-emerald-300">+0.654</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 font-bold text-slate-200">KEMIS Verification</td>
+                                    <td class="p-3 text-slate-400">+0.105</td>
+                                    <td class="p-3 text-slate-400">+0.088</td>
+                                    <td class="p-3 text-emerald-300">+0.654</td>
+                                    <td class="p-3 bg-emerald-500/20 text-emerald-400 font-bold">1.000</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 2: MULTI-TERM ANALYTICS -->
+            <section id="tab-analytics" class="tab-content space-y-6">
+                <div class="grid grid-cols-2 gap-6">
+                    <!-- Line Chart Component -->
+                    <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-5 space-y-4">
+                        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                            <h3 class="text-sm font-bold text-slate-200 flex items-center space-x-2">
+                                <i class="fa-solid fa-chart-line text-emerald-400"></i>
+                                <span>Multi-Term Mean Grade Trajectory</span>
+                            </h3>
+                            <button onclick="exportData('Multi-term Performance Trajectory')" class="text-xs text-emerald-400 hover:underline font-mono">Export CSV</button>
+                        </div>
+                        <div class="h-64 relative">
+                            <canvas id="multiTermChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Radial Grade Distribution -->
+                    <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-5 space-y-4">
+                        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                            <h3 class="text-sm font-bold text-slate-200 flex items-center space-x-2">
+                                <i class="fa-solid fa-chart-pie text-emerald-400"></i>
+                                <span>Current Grade Distribution Breakdown</span>
+                            </h3>
+                            <button onclick="exportData('Grade Breakdown Analytics')" class="text-xs text-emerald-400 hover:underline font-mono">Export CSV</button>
+                        </div>
+                        <div class="h-64 relative flex items-center justify-center">
+                            <canvas id="distributionChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 3: CLASS SUBJECT DRILL VIEW -->
+            <section id="tab-subject-drill" class="tab-content space-y-6">
+                <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-5 space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                        <div>
+                            <h3 class="text-sm font-bold text-slate-200 flex items-center space-x-2">
+                                <i class="fa-solid fa-diagram-project text-emerald-400"></i>
+                                <span>Form/Subject Performance & Teacher Attribution Matrix</span>
+                            </h3>
+                            <p class="text-xs text-slate-400">Target Architecture: Form 1 - Form 4 Subject Diagnostics</p>
+                        </div>
+                        <button onclick="exportData('Class Subject Performance Data')" class="px-3 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded text-xs font-mono">
+                            <i class="fa-solid fa-file-csv"></i> Export Matrix
+                        </button>
+                    </div>
+
+                    <div class="h-72 relative mb-6">
+                        <canvas id="subjectDrillChart"></canvas>
+                    </div>
+
+                    <!-- Subject Detailed Table -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-xs text-left">
+                            <thead class="bg-slate-950 text-slate-400 uppercase font-mono">
+                                <tr>
+                                    <th class="p-3 border-b border-slate-800">Subject Code</th>
+                                    <th class="p-3 border-b border-slate-800">Subject Name</th>
+                                    <th class="p-3 border-b border-slate-800">Lead Educator</th>
+                                    <th class="p-3 border-b border-slate-800">Mean Score</th>
+                                    <th class="p-3 border-b border-slate-800">Deviation</th>
+                                    <th class="p-3 border-b border-slate-800 text-right">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-800/60 font-mono">
+                                <tr class="hover:bg-slate-800/30">
+                                    <td class="p-3 font-bold text-emerald-400">MAT-101</td>
+                                    <td class="p-3 font-bold text-slate-200">Mathematics</td>
+                                    <td class="p-3 text-slate-300">Dr. J. Mwangi</td>
+                                    <td class="p-3 font-bold text-slate-100">74.2%</td>
+                                    <td class="p-3 text-emerald-400">+3.1%</td>
+                                    <td class="p-3 text-right">
+                                        <button onclick="exportData('Mathematics Drilldown Data')" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-[10px]">Export</button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-slate-800/30">
+                                    <td class="p-3 font-bold text-emerald-400">ENG-102</td>
+                                    <td class="p-3 font-bold text-slate-200">English Language</td>
+                                    <td class="p-3 text-slate-300">Mrs. A. Otieno</td>
+                                    <td class="p-3 font-bold text-slate-100">68.5%</td>
+                                    <td class="p-3 text-rose-400">-1.4%</td>
+                                    <td class="p-3 text-right">
+                                        <button onclick="exportData('English Drilldown Data')" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-[10px]">Export</button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-slate-800/30">
+                                    <td class="p-3 font-bold text-emerald-400">PHY-201</td>
+                                    <td class="p-3 font-bold text-slate-200">Physics</td>
+                                    <td class="p-3 text-slate-300">Mr. K. Chebet</td>
+                                    <td class="p-3 font-bold text-slate-100">81.0%</td>
+                                    <td class="p-3 text-emerald-400">+5.4%</td>
+                                    <td class="p-3 text-right">
+                                        <button onclick="exportData('Physics Drilldown Data')" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-[10px]">Export</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 4: GATE & ATTENDANCE STREAM -->
+            <section id="tab-attendance" class="tab-content space-y-6">
+                <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-5 space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                        <div>
+                            <h3 class="text-sm font-bold text-slate-200 flex items-center space-x-2">
+                                <i class="fa-solid fa-door-open text-emerald-400"></i>
+                                <span>Live Physical RFID Gate Scan Feed Stream</span>
+                            </h3>
+                            <p class="text-xs text-slate-400">Real-time gate telemetry log & automated verification checks</p>
+                        </div>
+                        <span class="flex items-center space-x-2 text-xs font-mono text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded border border-emerald-500/20">
+                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                            <span>STREAM ACTIVE</span>
+                        </span>
+                    </div>
+
+                    <div id="gate-stream" class="space-y-2 bg-slate-950 p-4 rounded-lg border border-slate-800 max-h-80 overflow-y-auto font-mono text-xs">
+                        <div class="text-slate-400 border-b border-slate-800/50 pb-2 pt-1">
+                            <span class="text-slate-500">[08:14:02]</span> RFID Scan IN: <span class="text-slate-200 font-bold">Ochieng, Brian</span> (Form 1 South) 
+                            <span class="float-right text-emerald-400 font-bold flex items-center space-x-1">
+                                <i class="fa-solid fa-circle-check text-[10px]"></i><span>VERIFIED</span>
+                            </span>
+                        </div>
+                        <div class="text-slate-400 border-b border-slate-800/50 pb-2 pt-1">
+                            <span class="text-slate-500">[08:13:45]</span> RFID Scan IN: <span class="text-slate-200 font-bold">Wanjiku, Mercy</span> (Form 1 South) 
+                            <span class="float-right text-emerald-400 font-bold flex items-center space-x-1">
+                                <i class="fa-solid fa-circle-check text-[10px]"></i><span>VERIFIED</span>
+                            </span>
+                        </div>
+                        <div class="text-slate-400 border-b border-slate-800/50 pb-2 pt-1">
+                            <span class="text-slate-500">[08:11:10]</span> RFID Scan IN: <span class="text-slate-200 font-bold">Gicheru, Samuel</span> (Form 3 West) 
+                            <span class="float-right text-rose-400 font-bold flex items-center space-x-1">
+                                <i class="fa-solid fa-triangle-exclamation text-[10px]"></i><span>ANOMALY DETECTED</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 5: USER PROVISIONING -->
+            <section id="tab-provisioning" class="tab-content space-y-6">
+                <div class="max-w-xl bg-slate-900/80 border border-slate-800 rounded-xl p-6 space-y-5">
+                    <div class="border-b border-slate-800 pb-3">
+                        <h3 class="text-sm font-bold text-slate-200 flex items-center space-x-2">
+                            <i class="fa-solid fa-user-plus text-emerald-400"></i>
+                            <span>Provision New Staff Security Credential</span>
+                        </h3>
+                        <p class="text-xs text-slate-400">Issue platform access keys and set RBAC role configurations</p>
+                    </div>
+                    <form onsubmit="event.preventDefault(); provisionMock();" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-mono text-slate-400 mb-1">FULL NAME</label>
+                            <input type="text" required placeholder="e.g. Dr. Arthur Pendelton" class="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-mono text-slate-400 mb-1">INSTITUTIONAL EMAIL</label>
+                            <input type="email" required placeholder="a.pendelton@academix.edu" class="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-mono text-slate-400 mb-1">ASSIGN SYSTEM ROLE</label>
+                            <select class="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-emerald-500">
+                                <option>Senior Educator / Class Instructor</option>
+                                <option>Finance Administrator</option>
+                                <option>Gate Compliance Officer</option>
+                                <option>System Auditor</option>
+                            </select>
+                        </div>
+                        <button id="provision-btn" type="submit" class="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-lg text-xs font-bold flex items-center justify-center space-x-2 transition-all">
+                            <i class="fa-solid fa-key"></i>
+                            <span>Issue System Credential</span>
+                        </button>
+                    </form>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- STUDENT 360° DRAWER / SLIDE-OVER COMPONENT -->
+    <div id="student-drawer" class="fixed inset-y-0 right-0 w-96 bg-slate-900 border-l border-slate-800 shadow-2xl z-50 transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col">
+        <div class="p-4 border-b border-slate-800 flex items-center justify-between bg-slate-950/50">
+            <h3 class="text-sm font-bold text-slate-200 flex items-center space-x-2">
+                <i class="fa-solid fa-id-card text-emerald-400"></i>
+                <span>Student 360° Telemetry Profile</span>
+            </h3>
+            <button onclick="closeStudentDrawer()" class="text-slate-400 hover:text-slate-200">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+        </div>
+
+        <div class="p-6 overflow-y-auto flex-1 space-y-6">
+            <!-- Header profile -->
+            <div class="flex items-center space-x-4 border-b border-slate-800 pb-4">
+                <div class="w-12 h-12 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center font-bold text-emerald-400 text-base">
+                    OB
+                </div>
+                <div>
+                    <h4 id="drawer-student-name" class="font-bold text-slate-100 text-sm">Ochieng, Brian</h4>
+                    <p id="drawer-student-id" class="text-xs font-mono text-slate-400">ID: #01-102</p>
+                    <span id="drawer-student-form" class="inline-block mt-1 text-[10px] font-mono bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded">Form 1 South</span>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="grid grid-cols-2 gap-3 font-mono text-xs">
+                <div class="bg-slate-950 p-3 rounded-lg border border-slate-800">
+                    <p class="text-slate-500">CURRENT MEAN</p>
+                    <p id="drawer-student-grade" class="text-lg font-bold text-emerald-400 mt-1">A- (81.4%)</p>
+                </div>
+                <div class="bg-slate-950 p-3 rounded-lg border border-slate-800">
+                    <p class="text-slate-500">ATTENDANCE</p>
+                    <p class="text-lg font-bold text-slate-200 mt-1">98.2%</p>
+                </div>
+            </div>
+
+            <!-- Detailed Telemetry Log -->
+            <div class="space-y-3">
+                <h5 class="text-xs font-bold text-slate-300 uppercase tracking-wider font-mono">System Flags & Diagnostics</h5>
+                <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 space-y-2 text-xs font-mono">
+                    <div class="flex justify-between border-b border-slate-800/60 pb-1.5">
+                        <span class="text-slate-400">KEMIS Status:</span>
+                        <span class="text-emerald-400 font-bold">VERIFIED</span>
+                    </div>
+                    <div class="flex justify-between border-b border-slate-800/60 pb-1.5">
+                        <span class="text-slate-400">Fee Balance:</span>
+                        <span class="text-slate-200">KES 0.00 (Cleared)</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-slate-400">Gate Access Status:</span>
+                        <span class="text-emerald-400 font-bold">PERMITTED</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-2">
+                <button onclick="exportData('Student Profile Data (' + document.getElementById('drawer-student-name').innerText + ')')" class="w-full py-2 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-lg text-xs font-bold transition-all">
+                    Export Full 360° Report (CSV)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CUSTOM TOOLTIP FOR TELEMETRY MATRIX -->
+    <div id="telemetry-tooltip" class="fixed hidden bg-slate-900/95 border border-slate-700 text-slate-200 text-xs rounded-lg p-3 shadow-2xl pointer-events-none z-50 font-mono space-y-1">
+        <p id="tooltip-id" class="text-slate-400 text-[10px]"></p>
+        <p id="tooltip-name" class="font-bold text-emerald-400 text-sm"></p>
+        <p id="tooltip-form" class="text-slate-300"></p>
+        <p id="tooltip-grade" class="text-slate-200"></p>
+        <p id="tooltip-status" class="text-rose-400 font-bold hidden"></p>
+        <p id="tooltip-kemis" class="text-indigo-400 font-bold hidden"></p>
+    </div>
+
+    <!-- CLIENT SCRIPTING & DYNAMIC INTERACTIONS -->
+    <script>
+        // Mock Dynamic Telemetry Dots Data
+        const dotData = [
+            { id: '#01-102', name: 'Ochieng, Brian', form: 'Form 1 South', status: 'optimal', grade: 'A-' },
+            { id: '#01-105', name: 'Wanjiku, Mercy', form: 'Form 1 South', status: 'optimal', grade: 'B+' },
+            { id: '#02-210', name: 'Kamau, Daniel', form: 'Form 2 East', status: 'hold', grade: 'C+', issue: 'M-Pesa Fee Balance Pending' },
+            { id: '#03-304', name: 'Kipchumba, Eric', form: 'Form 3 West', status: 'risk', grade: 'C-', issue: 'Absent 2 Consecutive Days' },
+            { id: '#04-412', name: 'Achieng, Faith', form: 'Form 4 North', status: 'kemis', grade: 'B-', issue: 'KEMIS UPI Mismatch' },
+            { id: '#01-118', name: 'Mutua, Kevin', form: 'Form 1 South', status: 'optimal', grade: 'A' },
+            { id: '#02-225', name: 'Nekesa, Brenda', form: 'Form 2 East', status: 'optimal', grade: 'B' },
+            { id: '#03-319', name: 'Gicheru, Samuel', form: 'Form 3 West', status: 'risk', grade: 'D+', issue: 'Gate Scanning Anomaly' },
+            { id: '#04-401', name: 'Otieno, Emmanuel', form: 'Form 4 North', status: 'optimal', grade: 'A-' },
+            { id: '#02-230', name: 'Mwangi, Grace', form: 'Form 2 East', status: 'hold', grade: 'C', issue: 'Unverified Payment Receipt' }
+        ];
+
+        // Generate remaining filler optimal dots to build matrix visual density
+        for(let i = 0; i < 70; i++) {
+            dotData.push({
+                id: `#0${(i%4)+1}-${100+i}`,
+                name: `Student #${1000+i}`,
+                form: `Form ${(i%4)+1}`,
+                status: 'optimal',
+                grade: ['A', 'A-', 'B+', 'B', 'B-', 'C+'][i%6]
+            });
+        }
+
+        // Render Telemetry Grid
+        function renderTelemetryGrid(filter = 'all') {
+            const container = document.getElementById('dots-grid');
+            if(!container) return;
+            container.innerHTML = '';
+
+            dotData.forEach(student => {
+                if (filter !== 'all' && student.status !== filter) return;
+
+                const dot = document.createElement('div');
+                let colorClass = 'bg-emerald-500/80 hover:bg-emerald-400 hover:scale-125';
+                if (student.status === 'risk') colorClass = 'bg-rose-500 hover:bg-rose-400 hover:scale-150 animate-pulse';
+                if (student.status === 'hold') colorClass = 'bg-amber-500 hover:bg-amber-400 hover:scale-125';
+                if (student.status === 'kemis') colorClass = 'bg-indigo-500 hover:bg-indigo-400 hover:scale-125';
+
+                dot.className = `w-3 h-3 rounded-full cursor-pointer transition-all duration-150 ${colorClass}`;
+                
+                // Mouse & click events
+                dot.addEventListener('mouseenter', (e) => showTooltip(e, student));
+                dot.addEventListener('mouseleave', hideTooltip);
+                dot.addEventListener('click', () => openStudentDrawer(student.id));
+
+                container.appendChild(dot);
+            });
+        }
+
+        // Tooltip Positioning & Logic
+        const tooltip = document.getElementById('telemetry-tooltip');
+        function showTooltip(e, data) {
+            document.getElementById('tooltip-id').innerText = `ID: ${data.id}`;
+            document.getElementById('tooltip-name').innerText = data.name;
+            document.getElementById('tooltip-form').innerText = data.form;
+            document.getElementById('tooltip-grade').innerText = `Grade: ${data.grade}`;
+
+            const statusEl = document.getElementById('tooltip-status');
+            const kemisEl = document.getElementById('tooltip-kemis');
+
+            if(data.issue) {
+                statusEl.innerText = `• ${data.issue}`;
+                statusEl.classList.remove('hidden');
+            } else {
+                statusEl.classList.add('hidden');
+            }
+            
+            if(data.status === 'kemis') {
+                kemisEl.innerText = '• KEMIS Audit Flagged';
+                kemisEl.classList.remove('hidden');
+            } else {
+                kemisEl.classList.add('hidden');
+            }
+
+            tooltip.classList.remove('hidden');
+            tooltip.style.left = `${e.clientX + 15}px`;
+            tooltip.style.top = `${e.clientY - 40}px`;
+        }
+
+        function hideTooltip() {
+            tooltip.classList.add('hidden');
+        }
+
+        // Filter Dot Click Handler
+        function filterDots(category) {
+            document.querySelectorAll('.dot-filter-btn').forEach(btn => {
+                btn.className = "dot-filter-btn px-2.5 py-1 rounded text-slate-400 hover:text-slate-200 transition-all";
+            });
+            if(event && event.target) {
+                event.target.className = "dot-filter-btn px-2.5 py-1 rounded bg-emerald-500/20 text-emerald-400 font-bold transition-all";
+            }
+            renderTelemetryGrid(category);
+        }
+
+        // Tab Switcher Engine
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.className = "nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-400 hover:bg-slate-800 hover:text-slate-200 border border-transparent";
+            });
+
+            const targetTab = document.getElementById('tab-' + tabId);
+            const targetNav = document.getElementById('nav-' + tabId);
+
+            if (targetTab) targetTab.classList.add('active');
+            if (targetNav) targetNav.className = "nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all bg-emerald-500/10 text-emerald-400 border border-emerald-500/30";
+
+            // Title Dynamic update
+            const viewTitle = document.getElementById('view-title');
+            if(viewTitle) {
+                const titles = {
+                    'telemetry': 'Institutional Telemetry Matrix',
+                    'analytics': 'Multi-Term Analytics & Trends',
+                    'subject-drill': 'Form & Subject Performance Drilldown',
+                    'attendance': 'Live Gate Scan Telemetry Stream',
+                    'provisioning': 'Security Credentials & Access Provisioning'
+                };
+                viewTitle.innerHTML = `<i class="fa-solid fa-border-all text-emerald-400"></i><span>${titles[tabId] || 'Command View'}</span>`;
+            }
+
+            // Trigger chart resize re-render when switching tabs
+            if (tabId === 'analytics' && window.multiTermChartRef) {
+                window.multiTermChartRef.resize();
+                window.distributionChartRef.resize();
+            }
+            if (tabId === 'subject-drill' && window.subjectChartRef) {
+                window.subjectChartRef.resize();
+            }
+        }
+
+        // Student 360° Drawer Logic
+        function openStudentDrawer(studentId) {
+            const student = dotData.find(s => s.id === studentId) || dotData[0];
+            document.getElementById('drawer-student-name').innerText = student.name;
+            document.getElementById('drawer-student-id').innerText = `ID: ${student.id}`;
+            document.getElementById('drawer-student-form').innerText = student.form;
+            document.getElementById('drawer-student-grade').innerText = `${student.grade} (Verified)`;
+
+            const drawer = document.getElementById('student-drawer');
+            drawer.classList.remove('translate-x-full');
+        }
+
+        function closeStudentDrawer() {
+            const drawer = document.getElementById('student-drawer');
+            drawer.classList.add('translate-x-full');
+        }
+
+        // Provisioning Mock Button Micro-Interaction
+        function provisionMock() {
+            const btn = document.getElementById('provision-btn');
+            const originalText = btn.innerHTML;
+            
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i><span>Provisioning Key...</span>';
+            btn.classList.replace('bg-slate-800', 'bg-emerald-600');
+            btn.classList.replace('text-slate-200', 'text-slate-950');
+
+            setTimeout(() => {
+                btn.innerHTML = '<i class="fa-solid fa-check"></i><span>Credential & Key Issued</span>';
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.classList.replace('bg-emerald-600', 'bg-slate-800');
+                    btn.classList.replace('text-slate-950', 'text-slate-200');
+                }, 2000);
+            }, 800);
+        }
+
+        // Global Dynamic CSV Exporter Handler
+        function exportData(datasetTitle) {
+            const content = `DATASET,TIMESTAMP,STATUS\n"${datasetTitle}","${new Date().toISOString()}","VERIFIED_EXPORT"`;
+            const blob = new Blob([content], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.setAttribute('href', url);
+            a.setAttribute('download', `${datasetTitle.toLowerCase().replace(/\s+/g, '_')}_export.csv`);
+            a.click();
+        }
+
+        // Global Executive Brief Exporter
+        function exportExecutiveBrief() {
+            alert('Executive Brief report generated! Downloading aggregated metrics package...');
+            exportData('Executive Executive Brief Comprehensive Overview');
+        }
+
+        // Live Gate Feed Telemetry Simulation (Every 7 Seconds)
+        setInterval(() => {
+            const feed = document.getElementById('gate-stream');
+            const attendanceTab = document.getElementById('tab-attendance');
+            if (feed && attendanceTab && attendanceTab.classList.contains('active')) {
+                const names = ['John D.', 'Mary W.', 'Peter K.', 'Lucy A.', 'Brian M.', 'Esther N.'];
+                const forms = ['Form 1 South', 'Form 2 East', 'Form 3 West', 'Form 4 North'];
+                const now = new Date();
+                const timeString = now.toTimeString().split(' ')[0];
+
+                const randomName = names[Math.floor(Math.random() * names.length)];
+                const randomForm = forms[Math.floor(Math.random() * forms.length)];
+
+                const entry = document.createElement('div');
+                entry.className = "text-slate-400 border-b border-slate-800/50 pb-2 pt-1 font-mono text-xs";
+                entry.innerHTML = `<span class="text-slate-500">[${timeString}]</span> RFID Scan IN: <span class="text-slate-200 font-bold">${randomName}</span> (${randomForm}) <span class="float-right text-emerald-400 font-bold flex items-center space-x-1"><i class="fa-solid fa-circle-check text-[10px]"></i><span>VERIFIED</span></span>`;
+
+                feed.insertBefore(entry, feed.firstChild);
+                if (feed.children.length > 8) feed.removeChild(feed.lastChild);
+            }
+        }, 7000);
+
+        // Chart.js Visualizations Setup
+        function initCharts() {
+            // Multi-Term Analytics Chart
+            const ctxMulti = document.getElementById('multiTermChart');
+            if(ctxMulti) {
+                window.multiTermChartRef = new Chart(ctxMulti, {
+                    type: 'line',
+                    data: {
+                        labels: ['Term 1 2024', 'Term 2 2024', 'Term 3 2024', 'Term 1 2025', 'Term 2 2025', 'Term 3 2025'],
+                        datasets: [
+                            {
+                                label: 'Institutional Mean Score (%)',
+                                data: [62.4, 65.1, 64.8, 68.2, 71.0, 73.5],
+                                borderColor: '#10b981',
+                                backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                                fill: true,
+                                tension: 0.3
+                            },
+                            {
+                                label: 'Attendance Average (%)',
+                                data: [88.0, 90.2, 89.5, 92.1, 94.0, 95.8],
+                                borderColor: '#6366f1',
+                                borderDash: [5, 5],
+                                tension: 0.3
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { labels: { color: '#94a3b8' } } },
+                        scales: {
+                            x: { grid: { color: '#1e293b' }, ticks: { color: '#94a3b8' } },
+                            y: { grid: { color: '#1e293b' }, ticks: { color: '#94a3b8' } }
+                        }
+                    }
+                });
+            }
+
+            // Radial Grade Distribution Chart
+            const ctxDist = document.getElementById('distributionChart');
+            if(ctxDist) {
+                window.distributionChartRef = new Chart(ctxDist, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Grade A/A-', 'Grade B+/B', 'Grade C+/C', 'Grade D/E'],
+                        datasets: [{
+                            data: [35, 45, 15, 5],
+                            backgroundColor: ['#10b981', '#3b82f6', '#f59e0b', '#ef4444']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { position: 'right', labels: { color: '#94a3b8' } } }
+                    }
+                });
+            }
+
+            // Subject Drill Performance Chart
+            const ctxSubject = document.getElementById('subjectDrillChart');
+            if(ctxSubject) {
+                window.subjectChartRef = new Chart(ctxSubject, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Mathematics', 'English', 'Kiswahili', 'Physics', 'Chemistry', 'Biology', 'History'],
+                        datasets: [{
+                            label: 'Mean Grade Score (%)',
+                            data: [74.2, 68.5, 79.0, 81.0, 62.8, 70.4, 85.2],
+                            backgroundColor: '#10b981'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { labels: { color: '#94a3b8' } } },
+                        scales: {
+                            x: { grid: { color: '#1e293b' }, ticks: { color: '#94a3b8' } },
+                            y: { grid: { color: '#1e293b' }, ticks: { color: '#94a3b8' } }
+                        }
+                    }
+                });
+            }
+        }
+
+        // Initialize Telemetry Matrix & Visuals on Load
+        document.addEventListener('DOMContentLoaded', () => {
+            renderTelemetryGrid();
+            initCharts();
+        });
+    </script>
+</body>
+</html>

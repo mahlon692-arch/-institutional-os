@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scholar Engine - Sponsor & Donor Command Center</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 50: '#ecfdf5', 500: '#10b981', 600: '#059669', 950: '#022c22' }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- TOP HEADER BAR -->
+    <header class="bg-slate-900 border-b border-slate-800 px-6 py-3.5 flex justify-between items-center z-30">
+        <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 font-bold text-sm">💰</div>
+            <div>
+                <h1 class="font-bold text-white text-sm tracking-wide">Scholar Engine <span class="text-amber-400 font-mono text-xs ml-2">[SPONSOR & BURSARY CLEARINGHOUSE]</span></h1>
+                <p class="text-xs text-slate-400">NG-CDF & CSR Secure Allocation & Impact Tracking Portal</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-4">
+            <a href="/" class="text-xs bg-slate-800 hover:bg-slate-700 text-amber-400 font-semibold px-3 py-1.5 rounded border border-slate-700 transition-colors">← Back to Orchestrator Nexus</a>
+            <div class="flex items-center gap-2 text-xs font-mono text-emerald-400 bg-emerald-950/40 border border-emerald-800/60 px-2.5 py-1 rounded">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                Jurisdiction Locked: Westlands Constituency
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="flex-1 p-6 max-w-7xl mx-auto w-full space-y-6">
+        
+        <!-- TOP STATS & ESCROW SUMMARY -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex items-center justify-between">
+                <div>
+                    <span class="text-xs text-slate-400 uppercase font-semibold">Available Escrow Vault</span>
+                    <div class="text-xl font-bold text-amber-400 mt-1">KES 5,000,000</div>
+                </div>
+                <span class="text-xs bg-amber-950 text-amber-400 border border-amber-800 px-2.5 py-1 rounded">M-Pesa Verified</span>
+            </div>
+            <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex items-center justify-between">
+                <div>
+                    <span class="text-xs text-slate-400 uppercase font-semibold">Filtered Recipients Cohort</span>
+                    <div class="text-xl font-bold text-cyan-400 mt-1" id="recipientCount">125 Students</div>
+                </div>
+                <span class="text-xs bg-cyan-950 text-cyan-400 border border-cyan-800 px-2.5 py-1 rounded">Auto-Curated</span>
+            </div>
+            <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex items-center justify-between">
+                <div>
+                    <span class="text-xs text-slate-400 uppercase font-semibold">Total Allocation Commitment</span>
+                    <div class="text-xl font-bold text-emerald-400 mt-1" id="totalCommitment">KES 3,750,000</div>
+                </div>
+                <span class="text-xs bg-emerald-950 text-emerald-400 border border-emerald-800 px-2.5 py-1 rounded">Ready to Lock</span>
+            </div>
+        </div>
+
+        <!-- MAIN GRID: FILTERING ENGINE & RECIPIENT LEDGER -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            <!-- LEFT: GRANULAR MATCHING & FILTERING ENGINE -->
+            <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl space-y-4">
+                <h3 class="text-sm font-bold text-amber-400 border-b border-slate-800 pb-2">Granular Matching & Filtering Engine</h3>
+                
+                <!-- Specific ID Search Bar -->
+                <div class="space-y-1.5">
+                    <label class="block text-xs font-semibold uppercase text-slate-400">Direct Student ID Lookup</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="directIdSearch" placeholder="e.g., SHS-881..." class="flex-1 bg-slate-950 border border-slate-800 rounded px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-amber-500 font-mono">
+                        <button onclick="searchSpecificStudent()" class="bg-amber-600 hover:bg-amber-500 text-slate-950 font-bold px-3 py-2 rounded text-xs">Lookup</button>
+                    </div>
+                </div>
+
+                <!-- Geographic Filters -->
+                <div class="space-y-1.5">
+                    <label class="block text-xs font-semibold uppercase text-slate-400">Constituency / Ward Scope</label>
+                    <select class="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-xs text-slate-300 focus:outline-none">
+                        <option>Westlands Constituency (All Wards)</option>
+                        <option>Parklands / Highridge Ward</option>
+                        <option>Kangemi Ward</option>
+                        <option>Karura Ward</option>
+                    </select>
+                </div>
+
+                <!-- Academic Performance Filters -->
+                <div class="space-y-1.5">
+                    <label class="block text-xs font-semibold uppercase text-slate-400">Academic & Talent Focus</label>
+                    <select onchange="applyFilter()" id="academicFilter" class="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-xs text-slate-300 focus:outline-none">
+                        <option value="all">All Academic Tiers</option>
+                        <option value="top">Top 5% Academic Excellence</option>
+                        <option value="stem">STEM / Math & Physics Excellence</option>
+                        <option value="growth">Growth Potential (Steady Upward B-C Tier)</option>
+                    </select>
+                </div>
+
+                <!-- Financial Distress & Hardship Filters -->
+                <div class="space-y-1.5">
+                    <label class="block text-xs font-semibold uppercase text-slate-400">Hardship & Distress Criteria</label>
+                    <select onchange="applyFilter()" id="hardshipFilter" class="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-xs text-slate-300 focus:outline-none">
+                        <option value="all">All Distress Levels</option>
+                        <option value="arrears">Largest Fee Arrears (Immediate Risk)</option>
+                        <option value="orphans">Total Orphans & Extreme Poverty Flags</option>
+                        <option value="ncpwd">NCPWD Special Needs Verified</option>
+                    </select>
+                </div>
+
+                <button onclick="applyFilter()" class="w-full bg-amber-600 hover:bg-amber-500 text-slate-950 font-bold py-2.5 rounded text-xs transition-colors mt-2">
+                    🔄 Run Recipient Curation Matrix
+                </button>
+            </div>
+
+            <!-- RIGHT: DYNAMIC RECIPIENT LEDGER & SMART-LOCK -->
+            <div class="lg:col-span-2 bg-slate-900 border border-slate-800 p-5 rounded-xl space-y-4 flex flex-col justify-between">
+                <div>
+                    <div class="flex justify-between items-center border-b border-slate-800 pb-2 mb-4">
+                        <h3 class="text-sm font-bold text-slate-200">Curated Recipient Ledger & Voucher Locking</h3>
+                        <span class="text-xs font-mono text-emerald-400">Direct Ledger Credit Mode</span>
+                    </div>
+
+                    <!-- Ledger Table -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-slate-950 text-slate-400 uppercase text-[10px]">
+                                <tr>
+                                    <th class="p-2.5">Student & ID</th>
+                                    <th class="p-2.5">School / Stream</th>
+                                    <th class="p-2.5">Fee Balance</th>
+                                    <th class="p-2.5">Allocation (KES)</th>
+                                    <th class="p-2.5">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recipientTableBody" class="divide-y divide-slate-800/60 font-mono text-slate-300">
+                                <tr>
+                                    <td class="p-2.5">Juma Mwangi <span class="text-slate-500 block text-[10px]">SHS-881</span></td>
+                                    <td class="p-2.5 text-slate-400">Shiners High (Form 3B)</td>
+                                    <td class="p-2.5 text-red-400">KES 24,500</td>
+                                    <td class="p-2.5 text-amber-400 font-bold">KES 30,000</td>
+                                    <td class="p-2.5"><span class="px-2 py-0.5 rounded text-[10px] bg-emerald-950 text-emerald-400 border border-emerald-800">Ready to Lock</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2.5">Amina Omondi <span class="text-slate-500 block text-[10px]">SHS-882</span></td>
+                                    <td class="p-2.5 text-slate-400">Shiners High (Form 2N)</td>
+                                    <td class="p-2.5 text-red-400">KES 18,200</td>
+                                    <td class="p-2.5 text-amber-400 font-bold">KES 30,000</td>
+                                    <td class="p-2.5"><span class="px-2 py-0.5 rounded text-[10px] bg-emerald-950 text-emerald-400 border border-emerald-800">Ready to Lock</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2.5">Brian Kiprop <span class="text-slate-500 block text-[10px]">SHS-883</span></td>
+                                    <td class="p-2.5 text-slate-400">Shiners High (Form 4S)</td>
+                                    <td class="p-2.5 text-red-400">KES 42,000</td>
+                                    <td class="p-2.5 text-amber-400 font-bold">KES 30,000</td>
+                                    <td class="p-2.5"><span class="px-2 py-0.5 rounded text-[10px] bg-emerald-950 text-emerald-400 border border-emerald-800">Ready to Lock</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Smart-Lock Action Bar -->
+                <div class="pt-4 border-t border-slate-800 flex flex-col sm:flex-row justify-between items-center gap-3">
+                    <div class="text-xs text-slate-400">
+                        Funds are cryptographically locked directly to student fee ledgers. <span class="text-white font-bold">Zero cash pass-through.</span>
+                    </div>
+                    <button onclick="executeSmartLockDisbursement()" class="bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold px-6 py-3 rounded-lg text-xs transition-colors shadow-lg">
+                        🔒 Authorize & Lock Escrow Disbursement
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- SCRIPT CONTROLLER -->
+    <script>
+        function applyFilter() {
+            alert("Recalibrating recipient ledger based on selected tier and hardship criteria...");
+        }
+
+        function searchSpecificStudent() {
+            const query = document.getElementById('directIdSearch').value.trim();
+            if(!query) {
+                alert("Please enter a student admission number or ID.");
+                return;
+            }
+            alert(`Querying secure bursary vault for student ID: [${query}]...`);
+        }
+
+        function executeSmartLockDisbursement() {
+            alert("Cryptographic vouchers successfully generated and locked to student institutional ledgers! Automated impact tracking enabled.");
+        }
+    </script>
+</body>
+</html>
